@@ -10,7 +10,10 @@ const messageCTRL = require('../controllers/message');
 router.get('/', auth, messageCTRL.getAllMessage);
 
 //post message et enregistrement des messages dans la bdd 'create'
-router.post('/create', /*auth,*/ multer, messageCTRL.createMessage);
+router.post('/create', auth, multer, messageCTRL.createMessage);
+
+//supprimer un message 'delete' uniquement pour le modérateur
+router.delete('/:message_id', /*auth,*/ messageCTRL.deleteMessage);
 
 /* Amélioration des routes possible en option pour le MVP
 //récuperer le message par l'id 'read'
@@ -18,9 +21,5 @@ router.get('/:id', auth, messageCTRL.getOneMessage);
 
 // modification des messages 'udpate'
 router.put('/:id', auth, multer, messageCTRL.modifyMessage);*/
-
-//supprimer un message 'delete'
-router.delete('/:message_id', /*auth,*/ messageCTRL.deleteMessage);
-
 
 module.exports = router;

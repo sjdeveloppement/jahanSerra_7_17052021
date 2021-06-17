@@ -4,6 +4,8 @@ const fs  = require('fs');
 const connection = require("../models/db");
 const { createPool } = require('mysql');
 
+const userSchema = require("../models/user");
+
 // fonction pour obtenir  tous les messages Read ALL
 exports.getAllMessage = (req, res, next) => {
      sql.query("SELECT message.message_id, message.message_title, message.message_content, message.message_image, message.message_appreciation, DATE_FORMAT(message.message_createdat,'%d/%m/%y') message_createdat, message.user_id, users.user_pseudo, users.user_image FROM message INNER JOIN users ON message.user_id = users.user_id ORDER BY message.message_id DESC", function (error, result){
@@ -15,18 +17,17 @@ exports.getAllMessage = (req, res, next) => {
          
     })
 };
- /// à finir pb de containte de clé étrangère
+ /// à finir pb de contrainte de clé étrangère
 //envoi des messages utilisateurs CREATE
 exports.createMessage = (req, res, next) =>{
       // Create Post since model
       let messageData = req.body;
-      messageData.message_image = req.file ? req.file.filename : null;
-  
+      messageData.message_image = req.file ? req.file.filename : null; 
       let newMessage = new Message(messageData);
       // Insert post in DB
       sql.query('INSERT INTO message SET ?', newMessage, function (error, results) {
           if (error) {
-              console.log(error)
+              console.log(messageData)
               return res.status(500).json({ error });
           }
           // DB ok
