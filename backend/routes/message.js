@@ -1,0 +1,26 @@
+const express = require('express');
+const router = express.Router(); // appel du routeur via express
+
+const auth = require('../middleware/auth');// sécuriser les routes grace à l'authentification
+const multer = require('../middleware/multer-config'); // gestion des images
+const messageCTRL = require('../controllers/message');
+
+//CRUD
+// route all message
+router.get('/', auth, messageCTRL.getAllMessage);
+
+//post message et enregistrement des messages dans la bdd 'create'
+router.post('/create', /*auth,*/ multer, messageCTRL.createMessage);
+
+/* Amélioration des routes possible en option pour le MVP
+//récuperer le message par l'id 'read'
+router.get('/:id', auth, messageCTRL.getOneMessage);
+
+// modification des messages 'udpate'
+router.put('/:id', auth, multer, messageCTRL.modifyMessage);*/
+
+//supprimer un message 'delete'
+router.delete('/:message_id', /*auth,*/ messageCTRL.deleteMessage);
+
+
+module.exports = router;
