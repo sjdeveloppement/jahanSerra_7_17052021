@@ -20,9 +20,6 @@ require('dotenv').config();
 
 //connexion app à la bdd
 
-
-//const User = require('./models/user');
-
 // Cors
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -43,30 +40,5 @@ app.use('/api/comment', commentRoute);
 
 //routes des users
 app.use('/api/auth', userRoute);
-
-
-
-
-
-//route test
-/*app.use('/api/auth/register', (req, res, next)=>{
-    req = connection.query('SELECT * FROM users', function(err, result){
-        return new Promise(resolve =>{
-            setTimeout(()=>{
-                resolve(result);
-                if(err) throw err;
-                console.log('requete envoyée');
-            },1000);
-        })
-        
-        
-        //console.log(result)
-        .then(res.status(200).json(result))
-        .catch(error =>{res.status(400).json({ error })})
-    })
-    
-    
-});*/
-
 
 module.exports = app;
