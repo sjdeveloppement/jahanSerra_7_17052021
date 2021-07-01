@@ -3,8 +3,9 @@ const Message = require('../models/message');
 const fs  = require('fs');
 const connection = require("../models/db");
 const { createPool } = require('mysql');
-
+const jwt = require('jsonwebtoken');
 const userSchema = require("../models/user");
+
 
 // fonction pour obtenir  tous les messages Read ALL
 exports.getAllMessage = (req, res, next) => {
@@ -17,27 +18,23 @@ exports.getAllMessage = (req, res, next) => {
          
     })
 };
- /// à finir pb de contrainte de clé étrangère
+ /// ici pb avec postman pour l'envoi de fichier via postman
 //envoi des messages utilisateurs CREATE
 exports.createMessage = (req, res, next) =>{
-      // Create Post since model
-      let messageData = req.body;
-      messageData.message_image = req.file ? req.file.filename : null; 
-      let newMessage = new Message(messageData);
-      // Insert post in DB
-      sql.query('INSERT INTO message SET ?', newMessage, function (error, results) {
-          if (error) {
-              console.log(messageData)
-              return res.status(500).json({ error });
+      // Create Message
+      const message_title = req.body.message_title;
+      const message_content = req.body.message_content;
+      const message_image = /*'test.png'*/`${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+      const userId = res.locals.userID;
+      console.log(message_image);
+      
+
+      sql.query('INSERT INTO message SET message_title=?, message_content=?, message_image=?, user_id=?', [message_title, message_content, message_image, userId], function (error, results){
+          if (error){
+              return res.status(400).json({error})
           }
-          // DB ok
-          const id = results.insertId;
-          newMessage.message_id = id;
-          return res.status(200).json({
-              message: 'message créé',
-              message: newMessage
-          });
-      });
+          return res.status(201).json({message: 'Votre message a bien été posté!'})
+      })
 
 };
 //Delete message

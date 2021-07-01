@@ -14,6 +14,7 @@ const helmet = require('helmet'); // sécurise les entêtes http
 const path = require('path'); //accès aux  chemins des fichiers
 const messageRoute = require('./routes/message');
 const userRoute = require('./routes/user');
+const commentRoute = require('./routes/comment');
 
 require('dotenv').config();
 
@@ -36,6 +37,9 @@ app.use('/images', express.static(path.join(__dirname,'images')));
 
 //routes des messages
 app.use('/api/message', messageRoute);
+
+//routes des commentaires
+app.use('/api/comment', commentRoute);
 
 //routes des users
 app.use('/api/auth', userRoute);
