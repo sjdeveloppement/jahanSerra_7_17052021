@@ -13,13 +13,13 @@ router.get('/', auth, messageCTRL.getAllMessage);
 router.post('/create', auth, multer, messageCTRL.createMessage);
 
 //supprimer un message 'delete' uniquement pour le modérateur
-router.delete('/:message_id', /*auth,*/ messageCTRL.deleteMessage);
+router.delete('/:message_id', auth, messageCTRL.deleteMessage);
 
 /* Amélioration des routes possible en option pour le MVP
-//récuperer le message par l'id 'read'
+//récuperer le message par l'id 'read' pour voir un seul message
 router.get('/:id', auth, messageCTRL.getOneMessage);
 
-// modification des messages 'udpate'
+// modification des messages 'udpate' 
 router.put('/:id', auth, multer, messageCTRL.modifyMessage);*/
 
 module.exports = router;

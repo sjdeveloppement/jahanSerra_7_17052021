@@ -16,6 +16,8 @@ const messageRoute = require('./routes/message');
 const userRoute = require('./routes/user');
 const commentRoute = require('./routes/comment');
 
+const session = require('cookie-session'); //paramètrage des cookies
+
 require('dotenv').config();
 
 //connexion app à la bdd
@@ -27,6 +29,20 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
+
+// sécuriser les cookies
+const expiryDate = new Date(Date.now()+60*60*1000);
+app.use(session({
+  name: 'session',
+  secret: process.env.SEC_SES,
+  cookie: {
+    secure: true,
+    httpOnly: true,
+    domain: 'http://localhost:3000',
+    expires: expiryDate
+  }
+}));
+
 //helmet 
 app.use(helmet());
 // gestion image par l'app

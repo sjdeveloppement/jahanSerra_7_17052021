@@ -6,7 +6,7 @@ const userSchema = function(user) {
     this.user_mail = user.user_mail;
     this.user_password = user.user_password;
     this.user_image = user.user_image;
-    //this.user_isadmin = user.user_isadmin;
+    this.user_isadmin = user.user_isadmin;
     
 };
 
