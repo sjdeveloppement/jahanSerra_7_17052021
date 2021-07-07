@@ -15,6 +15,9 @@ router.post('/create', auth, multer, messageCTRL.createMessage);
 //supprimer un message 'delete' uniquement pour le modérateur
 router.delete('/:message_id', auth, messageCTRL.deleteMessage);
 
+// Ajout de like par l'utilisateur
+router.post('/:message_id/appreciation', auth, messageCTRL.likeAppreciation);
+
 /* Amélioration des routes possible en option pour le MVP
 //récuperer le message par l'id 'read' pour voir un seul message
 router.get('/:id', auth, messageCTRL.getOneMessage);

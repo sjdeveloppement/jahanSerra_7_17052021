@@ -28,11 +28,11 @@ exports.createMessage = (req, res, next) => {
     const message_title = req.body.message_title;
     const message_content = req.body.message_content;
     const userId = res.locals.userID;
-   
+
     const message_image = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`;
-    
+
     // pour sans image
-    if (req.files.filename == null){
+    if (req.files.filename == null) {
         sql.query(`INSERT INTO message SET message_title=?,  message_content=?, user_id=?  `, [message_title, message_content, userId], function (error, results) {
             if (error) {
                 //console.log(req.file.filename);
@@ -41,13 +41,13 @@ exports.createMessage = (req, res, next) => {
             console.log(message_image);
             return res.status(201).json({ message: 'Votre message  sans image a bien été posté!' })
         })
-    }else{
+    } else {
         sql.query(`INSERT INTO message SET message_title=?, message_content=?, message_image=?, user_id=? `, [message_title, message_content, message_image, userId], function (error, results) {
             if (error) {
-                
+
                 return res.status(400).json({ error })
             }
-            
+
             return res.status(201).json({ message: 'Votre message a bien été posté!' })
         })
     }
@@ -61,47 +61,77 @@ exports.createMessage = (req, res, next) => {
 
 
 exports.deleteMessage = (req, res, next) => {
-    
+
     const userId = res.locals.userID;
     const message_id = req.params.message_id;
 
     let sqlDeletePost;
     let sqlSelectPost;
-    
+
     sqlSelectPost = `SELECT message_image FROM message WHERE message_id = ? `;
 
-    sql.query(sqlSelectPost, message_id,  function (err, result) {
-        
-        if(result !=null){
+    sql.query(sqlSelectPost, message_id, function (err, result) {
+
+        if (result != null) {
             const filename = result[0].message_image.split('/images/')[1];
-            
-            fs.unlink(`images/${filename}`,()=>{// suppression de l'image du fichier avant la suppression du message
+
+            fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
                 sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
-                sql.query(sqlDeletePost, [userId, message_id], function (err, result){
-                    if (err){
+                sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
+                    if (err) {
                         return res.status(500).json(err.message);
                     }
-                    res.status(200).json({ message: "Message  supprimé !"})
+                    res.status(200).json({ message: "Message  supprimé !" })
                 })
             })
-        } 
-        if(err){
+        }
+        if (err) {
             return res.status(500).json(err.message);
         }
     })
-    
-
-    /*sql.query('DELETE FROM message WHERE message_id = ? ', req.params.message_id, (err, rows) => {
-
-        if (!err) {
-            res.send(`message with the Record ID:${req.params.message_id} has been removed.`)
-        } else {
-            console.log(err)
-            return res.status(404).json({ error })
-        }
-    })*/
 };
 
+// like et dislike // A finir !
+
+exports.likeAppreciation = (req, res) => {
+    // un compteur de like qui s'incrémente quand un nouvel utilisateur clique sur le bouton j'aime
+    // quand l'utilisateur clique il ne peut plus re cliquer sur j'aime 
+    let appreciation = req.body.appreciation;
+    const userId = res.locals.userID;
+
+    // on recupère l'id du message
+    let message_id = req.params.message_id;
+    //sql message like
+    let sqlMessageAppreciationCounter;
+    let values;
+    // à finir ici !
+    // verification si l'utilisateur à déjà like
+    let CheckAlreadyLiked = "SELECT appreciation_id FROM appreciation WHERE message_id = ? AND user_id = ?";
+    values = [message_id, userId];
+    sql.query(CheckAlreadyLiked, values, function (err, result) {
+        if (err) {
+            return res.status(500).json(err.message)
+        }
+        // si un appreciation_id est trouvé alors on bloque, sinon on ajoute le like de l'utilisateur au message.
+        if (result[0] !== undefined) {
+            return res.status(401).json({ message: "un like par personne seulement" })
+        }
+        else {
+            // insertion des données pour le like dans la table appreciation
+            sqlMessageAppreciationCounter = 'INSERT INTO appreciation VALUES (NULL, ?, ?, NOW())';
+            values = [message_id, userId];
+            sql.query(sqlMessageAppreciationCounter, values, function (err, result) {
+                if (err) {
+                    return res.status(500).json(err.message);
+                }
+                res.status(201).json({ message: "Like ajouté" });
+            })
+        }
+
+    })
+
+
+}
 
 //  fonctionnalités en Option pour le MVP
 
