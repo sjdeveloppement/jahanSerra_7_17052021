@@ -4,14 +4,14 @@ const app = require('../app');
 const userCTRL = require('../controllers/user');
 const multer = require('../middleware/multer-config');
 const auth = require('../middleware/auth');
-
+const authentificationLimiter = require('../middleware/authentificationLimiter');// securiser le nombre de connexion contre le brut force.
 
 
 //Create a new user sign up
 router.post('/register', userCTRL.signup);
 
 //login
-router.post('/login', userCTRL.login);
+router.post('/login', authentificationLimiter, userCTRL.login);
 
 //voir les users
 router.get('/users', auth, userCTRL.findAll);

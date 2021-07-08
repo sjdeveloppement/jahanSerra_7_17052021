@@ -104,7 +104,7 @@ exports.likeAppreciation = (req, res) => {
     //sql message like
     let sqlMessageAppreciationCounter;
     let values;
-    // à finir ici !
+    
     // verification si l'utilisateur à déjà like
     let CheckAlreadyLiked = "SELECT appreciation_id FROM appreciation WHERE message_id = ? AND user_id = ?";
     values = [message_id, userId];
@@ -112,7 +112,7 @@ exports.likeAppreciation = (req, res) => {
         if (err) {
             return res.status(500).json(err.message)
         }
-        // si un appreciation_id est trouvé alors on bloque, sinon on ajoute le like de l'utilisateur au message.
+        // si un appreciation_id est trouvé alors on bloque, sinon on ajoute le like de l'utilisateur au message dans la table appreciation.
         if (result[0] !== undefined) {
             return res.status(401).json({ message: "un like par personne seulement" })
         }
@@ -126,6 +126,29 @@ exports.likeAppreciation = (req, res) => {
                 }
                 res.status(201).json({ message: "Like ajouté" });
             })
+            // À faire incrementer le compteur de la table message colonne message_appreciation
+            let appreciationCount = `SELECT COUNT(*) FROM appreciation WHERE message_id=${message_id} `; // on recupère le nombre de like du message 
+           let count = sql.query(appreciationCount, function (err, result){
+                if (err){
+                    return res.status(500).json(err.message);
+                }
+                //console.log(Object.values(result[0]));
+                console.log(count);
+                return result;
+            })
+            //console.log(Object.values(result[0]));
+            
+            // on place la valeur dans la variable pour pouvoir l'utiliser dans le comtpeur message_appreciation
+            
+            //values = [count];
+            
+            /*sqlInsertCount = "INSERT INTO message WHERE message_id = ? VALUES(?)";
+            sql.query(sqlInsertCount, message_id, values, function (err, result){
+                if (err){
+                    return res.status(500).json(err.message);
+                }
+                return res.status(200).json({message: "il y a"+ count +"like sur le message"+ message_id + "!"});
+            })*/
         }
 
     })
