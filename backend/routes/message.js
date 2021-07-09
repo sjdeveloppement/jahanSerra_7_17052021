@@ -5,12 +5,15 @@ const auth = require('../middleware/auth');// sécuriser les routes grace à l'a
 const multer = require('../middleware/multer-config'); // gestion des images
 const messageCTRL = require('../controllers/message');
 
+
+const validatorMessage = require('../middleware/validatorMessage'); // valide les inputs pour la création d'un message
+
 //CRUD
 // route all message
 router.get('/', auth, messageCTRL.getAllMessage);
 
 //post message et enregistrement des messages dans la bdd 'create'
-router.post('/create', auth, multer, messageCTRL.createMessage);
+router.post('/create',  auth, multer, validatorMessage,  messageCTRL.createMessage);
 
 //supprimer un message 'delete' uniquement pour le modérateur
 router.delete('/:message_id', auth, messageCTRL.deleteMessage);

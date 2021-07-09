@@ -8,6 +8,7 @@ const userSchema = require("../models/user");
 
 
 
+
 // fonction pour obtenir  tous les messages Read ALL
 exports.getAllMessage = (req, res, next) => {
     sql.query("SELECT message.message_id, message.message_title, message.message_content, message.message_image, message.message_appreciation, DATE_FORMAT(message.message_createdat,'%d/%m/%y') message_createdat, message.user_id, users.user_pseudo, users.user_image FROM message INNER JOIN users ON message.user_id = users.user_id ORDER BY message.message_id DESC", function (error, result) {
@@ -30,6 +31,7 @@ exports.createMessage = (req, res, next) => {
     const userId = res.locals.userID;
 
     const message_image = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`;
+
 
     // pour sans image
     if (req.files.filename == null) {
@@ -59,7 +61,9 @@ exports.createMessage = (req, res, next) => {
 //on recupère l'objet dans la bdd, on extrait le nom du fichier à supp et on le supp avec fs.unlink,
 // dans le callback on supp l'objet dans la base puis on renvoi la rep si cela à fonctionné ou pas.
 
-
+// à trouver le moyen de ne pas afficher le message supprimé quand l'id de l'utilisateur est diff de l'id de l'id du createur du message.
+// je dois comparer l'id de l'utilisateur avec l'id de l'utilisateur qui a crée le message si c'est bon j'autorise la suppression de l'image puis du message
+// s'occuper aussi du cas de l'admin.
 exports.deleteMessage = (req, res, next) => {
 
     const userId = res.locals.userID;
@@ -67,12 +71,15 @@ exports.deleteMessage = (req, res, next) => {
 
     let sqlDeletePost;
     let sqlSelectPost;
+    let sqlSelectmessageUserId;
 
     sqlSelectPost = `SELECT message_image FROM message WHERE message_id = ? `;
+    sqlSelectmessageUserId ="SELECT user_id FROM message WHERE message_id = ?";
 
     sql.query(sqlSelectPost, message_id, function (err, result) {
 
-        if (result != null) {
+        //console.log(result[0].message_image);
+        if (result[0].message_image != '') {
             const filename = result[0].message_image.split('/images/')[1];
 
             fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
@@ -81,14 +88,26 @@ exports.deleteMessage = (req, res, next) => {
                     if (err) {
                         return res.status(500).json(err.message);
                     }
+                    console.log(result);
                     res.status(200).json({ message: "Message  supprimé !" })
                 })
             })
+
+        }
+        else {
+            sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
+            sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
+                if (err) {
+                    return res.status(500).json(err.message);
+                }
+                console.log(result);
+                res.status(200).json({ message: "message supprimé !" });
+            });
         }
         if (err) {
             return res.status(500).json(err.message);
         }
-    })
+    });
 };
 
 // like et dislike // A finir !
@@ -104,7 +123,7 @@ exports.likeAppreciation = (req, res) => {
     //sql message like
     let sqlMessageAppreciationCounter;
     let values;
-    
+
     // verification si l'utilisateur à déjà like
     let CheckAlreadyLiked = "SELECT appreciation_id FROM appreciation WHERE message_id = ? AND user_id = ?";
     values = [message_id, userId];
@@ -128,8 +147,8 @@ exports.likeAppreciation = (req, res) => {
             })
             // À faire incrementer le compteur de la table message colonne message_appreciation
             let appreciationCount = `SELECT COUNT(*) FROM appreciation WHERE message_id=${message_id} `; // on recupère le nombre de like du message 
-           let count = sql.query(appreciationCount, function (err, result){
-                if (err){
+            let count = sql.query(appreciationCount, function (err, result) {
+                if (err) {
                     return res.status(500).json(err.message);
                 }
                 //console.log(Object.values(result[0]));
@@ -137,11 +156,11 @@ exports.likeAppreciation = (req, res) => {
                 return result;
             })
             //console.log(Object.values(result[0]));
-            
+
             // on place la valeur dans la variable pour pouvoir l'utiliser dans le comtpeur message_appreciation
-            
+
             //values = [count];
-            
+
             /*sqlInsertCount = "INSERT INTO message WHERE message_id = ? VALUES(?)";
             sql.query(sqlInsertCount, message_id, values, function (err, result){
                 if (err){

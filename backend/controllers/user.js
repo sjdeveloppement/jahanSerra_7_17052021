@@ -7,8 +7,6 @@ const sql = require('../models/db');
 const User = require('../models/user');
 const userSchema = require('../models/user');
 
-
-
 //const { Model } = require('sequelize/types');
 
 // Création d'un schema de validation du mot de passe afin de sécuriser les comptes avec un mdp fort
@@ -27,7 +25,6 @@ schema
 
 //  signup : on regarde si le schema du mdp est respecté si ok -> cryptage du password, créer l'utilisateur avec le mdp crypté le pseudo et le mail, puis l'enregistre dans la bdd
 exports.signup = (req, res, next) => {
-    /*code de base*/
     //validation de la requete
     if (!schema.validate(req.body.user_password)) {
         res.status(401).json({
@@ -44,9 +41,9 @@ exports.signup = (req, res, next) => {
                 user_pseudo: req.body.user_pseudo,//'','okok'
                 user_mail: req.body.user_mail,//'.com','mail@test.com'
                 user_password: hash,//'''test'
-                user_image: 'image_user.default.png'
+                user_image: 'image_user.default.png',
+                user_isadmin: false
             });
-            //console.log(req);
             // Insert user in DB
             sql.query('INSERT INTO users SET ?', newUser, function (error, results, fields) {
                 if (error) {
@@ -81,13 +78,13 @@ exports.login = (req, res, next) => {
         if (err) {
             return res.status(500).json(err.message);
         }
-        //console.log(data);
+        
 
         if (result.length == 0) {
             return res.status(401).json({ error: "Utilisateur non trouvé !" });
         }
         //si l'utilisateur existe, vérification du mot de passe
-        //console.log(result[0].user_id);
+        
         else {
             bcrypt.compare(password, result[0].user_password)
                
@@ -126,8 +123,6 @@ exports.findAll = (req, res, next) => {
             }, 1000);
         })
 
-
-            //console.log(result)
             .then(res.status(200).json(result))
             .catch(error => { res.status(400).json({ error }) })
     })
@@ -175,62 +170,6 @@ exports.update = (req, res, next) => {
 
             })
     
-
-    /*if (!req.file) {
-        
-        const modifyCryptedPass = req.body.user_password;
-        bcrypt.hash(modifyCryptedPass, 10)
-            .then(hash => {
-                sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?  WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash, req.params.user_id], function (error, results) {
-                    if (error) {
-                        console.log(req.body);
-                        return res.status(500).json({ error });
-                    } else if (results.length === 0) {
-                        return res.status(401).json({ message: 'utilisateur inexistant' });
-                    } else {
-                        //console.log(req.file);
-                        //console.log(result[0]);
-                        //console.log(user);
-                        return res.status(200).json({ message: 'utilisateur modifié' });
-
-                    }
-                });
-
-            })
-    }else{
-        const user_image_url = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-        const modifyCryptedPass = req.body.user_password;
-        bcrypt.hash(modifyCryptedPass, 10)
-            .then(hash => {
-                sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?  WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash, req.params.user_id], function (error, results) {
-                    if (error) {
-                        console.log(req.body);
-                        return res.status(500).json({ error });
-                    } else if (results.length === 0) {
-                        return res.status(401).json({ message: 'utilisateur inexistant' });
-                    } else {
-                        //console.log({...req.file});
-                        //console.log(result[0]);
-                        //console.log(user);
-                        return res.status(200).json({ message: 'utilisateur modifié' });
-
-                    }
-                });
-
-            }).then(
-                sql.query('UPDATE users SET user_image WHERE user_id=?', [user_image_url, req.params.user_id],function (error, results){
-                    if (error) {
-                        return res.status(500).json({ error });
-                    } else if (results.length === 0) {
-                        return res.status(401).json({ message: ' image profil utilisateur inexistant' });
-                    } else {
-                        console.log({...req.file});
-                        return res.status(200).json({ message: 'image profil utilisateur modifié' });
-
-                    }
-                }))
-        
-    }*/
 };
 
 //Delete user on séléctionne l'id qui correspond dans la bdd à l'id séléctionner dans les paramètre de la req http et on verifie sa présence si ok suppression
