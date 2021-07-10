@@ -6,12 +6,13 @@ const multer = require('../middleware/multer-config');
 const auth = require('../middleware/auth');
 const authentificationLimiter = require('../middleware/authentificationLimiter');// securiser le nombre de connexion contre le brut force.
 const validator = require('../middleware/validator'); // sécurise le format des champs pour l'inscription grace à un schema
+const validatorLogin = require('../middleware/validatorLogin');
 
 //Create a new user sign up
 router.post('/register', validator, userCTRL.signup);
 
 //login
-router.post('/login', authentificationLimiter, userCTRL.login);
+router.post('/login', validatorLogin, authentificationLimiter, userCTRL.login);
 
 //voir les users
 router.get('/users', auth, userCTRL.findAll);

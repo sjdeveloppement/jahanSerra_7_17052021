@@ -74,7 +74,8 @@ exports.deleteMessage = (req, res, next) => {
     let sqlSelectmessageUserId;
 
     sqlSelectPost = `SELECT message_image FROM message WHERE message_id = ? `;
-    sqlSelectmessageUserId ="SELECT user_id FROM message WHERE message_id = ?";
+    sqlSelectmessageUserId = "SELECT user_id FROM message WHERE message_id = ?";
+    // ici faire une condition avec elsif plutôt pour gerer le cas ou l'utilisateur n'a pas le même id que l'user_id du message
 
     sql.query(sqlSelectPost, message_id, function (err, result) {
 
@@ -88,7 +89,7 @@ exports.deleteMessage = (req, res, next) => {
                     if (err) {
                         return res.status(500).json(err.message);
                     }
-                    console.log(result);
+                    
                     res.status(200).json({ message: "Message  supprimé !" })
                 })
             })
@@ -145,35 +146,18 @@ exports.likeAppreciation = (req, res) => {
                 }
                 res.status(201).json({ message: "Like ajouté" });
             })
-            // À faire incrementer le compteur de la table message colonne message_appreciation
-            let appreciationCount = `SELECT COUNT(*) FROM appreciation WHERE message_id=${message_id} `; // on recupère le nombre de like du message 
-            let count = sql.query(appreciationCount, function (err, result) {
+            // on incremente le compteur 
+
+            sqlInsertCount = "UPDATE message SET message_appreciation = message_appreciation +1 WHERE message_id = ? ";
+            sql.query(sqlInsertCount, message_id, function (err, result) {
                 if (err) {
                     return res.status(500).json(err.message);
                 }
-                //console.log(Object.values(result[0]));
-                console.log(count);
-                return result;
+                //return res.status(200).json({message: "like ajouté sur le message"+ message_id + "!"});
             })
-            //console.log(Object.values(result[0]));
-
-            // on place la valeur dans la variable pour pouvoir l'utiliser dans le comtpeur message_appreciation
-
-            //values = [count];
-
-            /*sqlInsertCount = "INSERT INTO message WHERE message_id = ? VALUES(?)";
-            sql.query(sqlInsertCount, message_id, values, function (err, result){
-                if (err){
-                    return res.status(500).json(err.message);
-                }
-                return res.status(200).json({message: "il y a"+ count +"like sur le message"+ message_id + "!"});
-            })*/
         }
-
     })
-
-
-}
+};
 
 //  fonctionnalités en Option pour le MVP
 
