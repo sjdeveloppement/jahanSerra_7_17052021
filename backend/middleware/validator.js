@@ -13,14 +13,14 @@ module.exports = (req, res, next)=>{
         })
     }
     //check si il y a des caractère spéciaux dans l'email
-    if(validator.matches(req.body.user_pseudo, [/^[<>*/|\s]+$/i])){
+    if(validator.matches(req.body.user_pseudo, /^[<>*/|\s]+$/i)){
         
         return res.status(400).json({
             error: "L'email ne doit pas contenir des caractères spéciaux"
         })
     }
     // check si le pseudo n'a pas de caractères non autorisés
-    if(!validator.matches(req.body.user_pseudo, [/^[a-zéèùâûêîôàù'\d\-_\s]+$/i])){
+    if(!validator.matches(req.body.user_pseudo,  /^[a-zéèùâûêîôàù'\d\-_\s]+$/i)){
         
         return res.status(400).json({
             error: "Le pseudo ne doit pas contenir des caractères spéciaux"

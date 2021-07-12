@@ -18,15 +18,15 @@ exports.createComment = (req, res)=>{
     let newComment = new Comment(req.body);
     newComment.user_id = res.locals.userID;
     newComment.message_id = req.params.message_id;
-    console.log(req.params.message_id);
+    newComment.comment_content = req.body.comment_content;
     sql.query('INSERT INTO comment SET ?', newComment, function (error, results){
         if(error){
-            console.log(error)
+            
             return res.status(500).json({ error });
         }
         //DBok
         const id = results.InsertId;
-        newComment.comment_id= id;
+        newComment.comment_id = id;
         return res.status(200).json({
             message: 'commentaire ajouté',
             comment: newComment
@@ -43,6 +43,7 @@ exports.deleteComment = (req, res)=>{
    
     let q = 'DELETE FROM comment WHERE comment_id=? AND user_id=?';
     let p =[comment_id, user_id];
+    // en cas de suppression par l'admin
     if(req.admin){
         q='DELETE FROM comment WHERE comment_id=?';
         p=[comment_id];
@@ -58,7 +59,7 @@ exports.deleteComment = (req, res)=>{
             
         })
     }
-    
+    // en cas de suppression par l'utilisateur
     sql.query(q,p,function (error, results){
         if(error){ 
             return res.status(500).json({ error });
@@ -66,7 +67,7 @@ exports.deleteComment = (req, res)=>{
         
         else{
             
-            return res.status(200).json({message: "Si vous êtes l'auteur du commentaire il sera supprimé"});
+            return res.status(200).json({message: "Si vous êtes l'auteur du commentaire, il sera supprimé"});
         }
         
     })

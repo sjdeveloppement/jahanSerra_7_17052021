@@ -75,43 +75,57 @@ exports.deleteMessage = (req, res, next) => {
 
     sqlSelectPost = `SELECT message_image FROM message WHERE message_id = ? `;
     sqlSelectmessageUserId = "SELECT user_id FROM message WHERE message_id = ?";
-    // ici faire une condition avec elsif plutôt pour gerer le cas ou l'utilisateur n'a pas le même id que l'user_id du message
-
-    sql.query(sqlSelectPost, message_id, function (err, result) {
-
-        //console.log(result[0].message_image);
-        if (result[0].message_image != '') {
-            const filename = result[0].message_image.split('/images/')[1];
-
-            fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
-                sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
-                sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
-                    if (err) {
-                        return res.status(500).json(err.message);
-                    }
-                    
-                    res.status(200).json({ message: "Message  supprimé !" })
-                })
-            })
-
+     sql.query(sqlSelectmessageUserId, message_id, function (err, result) {
+        if (err) {
+            return res.status(404).json(err.message);
         }
-        else {
-            sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
-            sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
+        // condition pour que la suppression s'execute l'id de l'utilisateur doit être la même que l'utilisateur qui a créé le message
+        if (result[0].user_id == userId) {
+            console.log(result[0].user_id);
+            // ici traitement de la suppression
+
+            sql.query(sqlSelectPost, message_id, function (err, result) {
+
+                //console.log(result[0].message_image);
+                if (result[0].message_image != '') {
+                    const filename = result[0].message_image.split('/images/')[1];
+
+                    fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
+                        sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
+                        sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
+                            if (err) {
+                                return res.status(500).json(err.message);
+                            }
+
+                            res.status(200).json({ message: "Message  supprimé !" })
+                        })
+                    })
+
+                }
+                else {
+                    sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
+                    sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
+                        if (err) {
+                            return res.status(500).json(err.message);
+                        }
+                        console.log(result);
+                        res.status(200).json({ message: "message supprimé !" });
+                    });
+                }
                 if (err) {
                     return res.status(500).json(err.message);
                 }
-                console.log(result);
-                res.status(200).json({ message: "message supprimé !" });
             });
+
+        }else{
+            return res.status(401).json({message: "Vous ne pouvez pas supprimer le message d'un autre utilisateur !"});
         }
-        if (err) {
-            return res.status(500).json(err.message);
-        }
-    });
+    })
+
+
 };
 
-// like et dislike // A finir !
+// like
 
 exports.likeAppreciation = (req, res) => {
     // un compteur de like qui s'incrémente quand un nouvel utilisateur clique sur le bouton j'aime
