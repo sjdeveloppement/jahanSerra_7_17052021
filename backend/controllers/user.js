@@ -150,7 +150,7 @@ exports.findOne = (req, res, next) => {
 //update user
 exports.update = (req, res, next) => {
     
-    const imgUser = req.file ?`${req.protocol}://${req.get('host')}/images/${req.file.filename}`: null ;
+    const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
     const modifyCryptedPass = req.body.user_password;
         bcrypt.hash(modifyCryptedPass, 10)
             .then(hash => {

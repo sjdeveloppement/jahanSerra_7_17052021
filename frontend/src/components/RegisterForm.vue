@@ -2,9 +2,9 @@
   <v-container>
     <form>
       <v-text-field
-        v-model="name"
-        :error-messages="nameErrors"
-        label="Name"
+        v-model="pseudo"
+        :error-messages="pseudoErrors"
+        label="Pseudo"
         required
         
       ></v-text-field>
@@ -15,6 +15,13 @@
         required
         
       ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :error-messages="passwordErrors"
+        label="Mot de passe"
+        required
+        
+      ></v-text-field>
       <v-checkbox
         v-model="checkbox"
         :error-messages="checkboxErrors"
@@ -22,7 +29,7 @@
         required
        
       ></v-checkbox>
-      <v-btn class="mr-4" > submit </v-btn>
+      <v-btn class="mr-4" > s'inscrire </v-btn>
     </form>
   </v-container>
 </template>
@@ -30,10 +37,12 @@
     export default {
         name: "registerform",
         data: ()=>({
-            name : "",
+            pseudo : "",
             email: "",
-            nameErrors: "Veuillez rentrer un nom valide ! ",
+            password: "",
+            pseudoErrors: "Veuillez rentrer un pseudo valide ! ",
             emailErrors: "Veuillez rentrer une adresse mail valide !",
+            passwordErrors: "Veuillez rentrer un mdp valide !",
             checkboxErrors: "Veuillez accepter les conditions de la politique RGPD pour vous inscrire."
 
 

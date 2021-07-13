@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <v-container class="home">
     <h1>Ici Homepage</h1>
     <formulaire :bindChien="chien" @validFormStart="formValidFromChild"></formulaire>
-  </div>
+  </v-container>
 </template>
 
 <script>
