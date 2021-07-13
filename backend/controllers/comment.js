@@ -44,7 +44,7 @@ exports.deleteComment = (req, res)=>{
     let q = 'DELETE FROM comment WHERE comment_id=? AND user_id=?';
     let p =[comment_id, user_id];
     // en cas de suppression par l'admin
-    if(req.admin){
+    if(admin){
         q='DELETE FROM comment WHERE comment_id=?';
         p=[comment_id];
         sql.query(q,p,function (error, results){
@@ -59,7 +59,9 @@ exports.deleteComment = (req, res)=>{
             
         })
     }
-    // en cas de suppression par l'utilisateur
+    // en option pour après le mvp rajout de la possibilité par l'utilisateur de supprimer son propre commentaire
+    /*if(!admin){
+        // en cas de suppression par l'utilisateur
     sql.query(q,p,function (error, results){
         if(error){ 
             return res.status(500).json({ error });
@@ -71,6 +73,5 @@ exports.deleteComment = (req, res)=>{
         }
         
     })
-
-
+    }*/
 };

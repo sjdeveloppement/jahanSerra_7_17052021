@@ -61,14 +61,14 @@ exports.createMessage = (req, res, next) => {
 //on recupère l'objet dans la bdd, on extrait le nom du fichier à supp et on le supp avec fs.unlink,
 // dans le callback on supp l'objet dans la base puis on renvoi la rep si cela à fonctionné ou pas.
 
-// à trouver le moyen de ne pas afficher le message supprimé quand l'id de l'utilisateur est diff de l'id de l'id du createur du message.
+// à trouver le moyen de ne pas bloquer si l'utilisateur n'est pas admin mais qu'il est le createur du message
 // je dois comparer l'id de l'utilisateur avec l'id de l'utilisateur qui a crée le message si c'est bon j'autorise la suppression de l'image puis du message
-// s'occuper aussi du cas de l'admin.
+
 exports.deleteMessage = (req, res, next) => {
 
     const userId = res.locals.userID;
     const message_id = req.params.message_id;
-
+    
     let sqlDeletePost;
     let sqlSelectPost;
     let sqlSelectmessageUserId;
@@ -79,38 +79,59 @@ exports.deleteMessage = (req, res, next) => {
         if (err) {
             return res.status(404).json(err.message);
         }
-        // condition pour que la suppression s'execute l'id de l'utilisateur doit être la même que l'utilisateur qui a créé le message
-        if (result[0].user_id == userId) {
-            console.log(result[0].user_id);
+        // condition pour que la suppression s'execute l'id de l'utilisateur doit être admin (evolution possible du mvp la même que l'utilisateur qui a créé le message )
+        if (/*result[0].user_id == userId ||*/ admin) {
+            
             // ici traitement de la suppression
 
             sql.query(sqlSelectPost, message_id, function (err, result) {
 
-                //console.log(result[0].message_image);
+                
                 if (result[0].message_image != '') {
                     const filename = result[0].message_image.split('/images/')[1];
 
                     fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
                         sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
-                        sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
-                            if (err) {
-                                return res.status(500).json(err.message);
-                            }
-
-                            res.status(200).json({ message: "Message  supprimé !" })
-                        })
+                        sqlDeletePostAdmin = "DELETE FROM message WHERE message_id = ?"; // pour l'admin
+                        if(admin){
+                            sql.query(sqlDeletePostAdmin, [message_id], function (err, result){
+                                if (err){
+                                    return res.status(500).json(err.message);
+                                }
+                                res.status(200).json({ message: "Message supprimé par l'administrateur !" })
+                            })
+                        }/*else{ // si pas admin on vérifie aussi l'id de l'utilisateur
+                            sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
+                                if (err) {
+                                    return res.status(500).json(err.message);
+                                }
+    
+                                res.status(200).json({ message: "Message  supprimé !" })
+                            })
+                        }*/
+                        
                     })
 
                 }
                 else {
                     sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
-                    sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
-                        if (err) {
-                            return res.status(500).json(err.message);
-                        }
-                        console.log(result);
-                        res.status(200).json({ message: "message supprimé !" });
-                    });
+                    sqlDeletePostAdmin = "DELETE FROM message WHERE message_id = ?"; // pour l'admin
+                        if(admin){
+                            sql.query(sqlDeletePostAdmin, [message_id], function (err, result){
+                                if (err){
+                                    return res.status(500).json(err.message);
+                                }
+                                res.status(200).json({ message: "Message supprimé par l'administrateur !" })
+                            })
+                        }/*else{// si ce n'est pas un admin 
+                            sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
+                                if (err) {
+                                    return res.status(500).json(err.message);
+                                }
+                                
+                                res.status(200).json({ message: "message supprimé !" });
+                            });
+                        }*/
                 }
                 if (err) {
                     return res.status(500).json(err.message);

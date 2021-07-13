@@ -175,13 +175,26 @@ exports.update = (req, res, next) => {
 //Delete user on séléctionne l'id qui correspond dans la bdd à l'id séléctionner dans les paramètre de la req http et on verifie sa présence si ok suppression
 exports.delete = (req, res, next) => {
     const user_id = req.params.user_id;
-    sql.query('DELETE FROM users WHERE user_id=?', user_id, function (error, results) {
-        if (error) {
-            return res.status(500).json({ error });
-        } else if (results.length === 0) {
-            return res.status(401).json({ message: 'utilisateur introuvable' });
-        } else {
-            return res.status(200).json({ user: results[0], message: 'profil supprimé' });
+    const userId = res.locals.userID;
+    sql.query("SELECT user_isadmin FROM users WHERE user_id=?", userId, function(err, result){
+        if (err){
+            res.status(500).json(err.message);
         }
-    });
+        if (result[0].user_isadmin == 1 ||user_id == userId){
+            sql.query('DELETE FROM users WHERE user_id=?', user_id, function (error, results) {
+                if (error) {
+                    return res.status(500).json({ error });
+                } else if (results.length === 0) {
+                    return res.status(401).json({ message: 'utilisateur introuvable' });
+                } else {
+                    return res.status(200).json({ user: results[0], message: 'profil supprimé' });
+                }
+            });
+        }else{
+            return res.status(403).json({ message: "Vous ne pouvez pas supprimer le profil d'un autre utilisateur"});
+        }
+        }
+    )
+    
 };
+

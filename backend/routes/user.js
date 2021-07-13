@@ -24,7 +24,7 @@ router.get('/users/:user_id', auth, userCTRL.findOne);
 router.put('/users/:user_id', auth, multer, userCTRL.update);
 
 
-//Supprimer un utilisateur
+//Supprimer un utilisateur ! seulement pour les admin ou le proprietaire du compte
 router.delete('/users/:user_id', auth, userCTRL.delete);
 
 module.exports = router;
