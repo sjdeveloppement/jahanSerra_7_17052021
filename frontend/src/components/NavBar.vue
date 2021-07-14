@@ -29,6 +29,12 @@
     >
     <span class="mr-2">Register</span>
     </v-btn>
+    <v-btn 
+        :to="account"
+        text
+    >
+    <span class="mr-2">Account</span>
+    </v-btn>
     </v-app-bar>
   </nav>
 </template>
@@ -44,7 +50,8 @@ export default {
 
       home: "/",
       sign: "/sign-in",
-      register: "/register"
+      register: "/register",
+      account: "/account"
 
   })
 
