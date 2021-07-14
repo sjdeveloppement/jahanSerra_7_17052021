@@ -3,33 +3,31 @@
     <form>
       <v-text-field
         v-model="pseudo"
-        :error-messages="pseudoErrors"
+        
         label="Pseudo"
         required
         
       ></v-text-field>
       <v-text-field
         v-model="email"
-        :error-messages="emailErrors"
+        
         label="E-mail"
         required
         
       ></v-text-field>
       <v-text-field
         v-model="password"
-        :error-messages="passwordErrors"
+        
         label="Mot de passe"
         required
         
       ></v-text-field>
       <v-checkbox
         v-model="checkbox"
-        :error-messages="checkboxErrors"
-        label="En validant cette case j'accepte la politique RGPD de l'application Groupomania."
+        label="En validant cette case j'accepte la politique RGPD de l'application MyGroupomania."
         required
-       
       ></v-checkbox>
-      <v-btn class="mr-4" > s'inscrire </v-btn>
+      <v-btn class="mr-4 white--text" style="background-color: #D1515A" > s'inscrire </v-btn>
     </form>
   </v-container>
 </template>

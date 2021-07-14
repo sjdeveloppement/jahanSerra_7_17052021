@@ -4,19 +4,19 @@
       <v-col>
           <v-form ref="form" lazy-validation>
             <v-text-field
-              v-model="name"
-              label="Name"
-              required
-            ></v-text-field>
-
-            <v-text-field
               v-model="email"
               label="E-mail"
               required
             ></v-text-field>
+
+            <v-text-field
+              v-model="password"
+              label="Password"
+              required
+            ></v-text-field>
             <v-btn
-              color="success"
-              class="mr-4"
+              color="#D1515A"
+              class="mr-4 white--text"
               @click="validate"
             >
               Validate
@@ -27,8 +27,8 @@
   
     <v-row>
       <v-col>
-        <p>Name: {{ name }}</p>
-        <p>Email: {{ email }}</p>
+        <p>Email: {{ email}}</p>
+        <p>Password: {{ password }}</p>
         <p>Full name: {{ fullName }}</p>
         <p>Nom de chien: {{ bindChien }}</p>
       </v-col>
@@ -46,18 +46,18 @@ export default {
 
   ],
   data: () => ({
-    name : "",
-    email: ""
+    email : "",
+    password: ""
   }),
   methods: {
     validate() {
-      this.$emit("validFormStart", this.name);
+      this.$emit("validFormStart", this.email);
     }
   },
 
   computed: {
     fullName() {
-      return this.name + " " + this.email;
+      return this.email + " " + this.password;
     }
   },
 

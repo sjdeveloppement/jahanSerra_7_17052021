@@ -1,6 +1,6 @@
 <template>
   <v-container class="home">
-    <h1>Ici Homepage</h1>
+    <h1>MyGroupomania</h1>
     <formulaire :bindChien ="chien" @validFormStart="formValidFromChild"></formulaire>
     
   </v-container>

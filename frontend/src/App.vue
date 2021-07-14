@@ -1,4 +1,5 @@
 <template>
+<v-app>
   <div>
     <div id="nav">
       <nav-bar></nav-bar>
@@ -16,6 +17,8 @@
     </v-footer>
     
   </div>
+</v-app>
+  
 </template>
 <script>
 

@@ -1,6 +1,6 @@
 <template>
   <v-container class="register">
-    <h1 class="primary--text">S'inscrire sur Groupomania</h1>
+    <h1>S'inscrire sur MyGroupomania</h1>
     <register-form></register-form>
     
   </v-container>

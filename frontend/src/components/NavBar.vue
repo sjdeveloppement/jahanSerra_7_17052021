@@ -2,12 +2,12 @@
    <nav>
     <v-app-bar
         app
-        color="primary"
+        color="#122441"
         
     >
       <v-toolbar-title
-          class="display-1 Bold text"
-          style="cursor:pointer">Hello
+          class="display-1 Bold text" 
+          style="cursor:pointer; color: #D1515A">Welcome !
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -15,25 +15,31 @@
         :to="home"
         text
     >
-    <span class="mr-2">Home</span>
+    <span class="mr-2" style ="color: #D1515A">Home</span>
     </v-btn>
     <v-btn 
         :to="sign"
         text
     >
-    <span class="mr-2">Sign in</span>
+    <span class="mr-2" style ="color: #D1515A">Sign in</span>
     </v-btn>
     <v-btn 
         :to="register"
         text
     >
-    <span class="mr-2">Register</span>
+    <span class="mr-2" style ="color: #D1515A">Register</span>
     </v-btn>
     <v-btn 
         :to="account"
         text
     >
-    <span class="mr-2">Account</span>
+    <span class="mr-2" style ="color: #D1515A">Account</span>
+    </v-btn>
+    <v-btn 
+        :to="tchat"
+        text
+    >
+    <span class="mr-2" style ="color: #D1515A">Tchat</span>
     </v-btn>
     </v-app-bar>
   </nav>
@@ -51,7 +57,8 @@ export default {
       home: "/",
       sign: "/sign-in",
       register: "/register",
-      account: "/account"
+      account: "/account",
+      tchat: "/tchat"
 
   })
 

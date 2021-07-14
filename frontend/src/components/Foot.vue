@@ -1,7 +1,7 @@
 <template>
 <v-container>
   <v-Foot
-    color="primary lighten-1"
+    color="#122441"
     padless
   >
     <v-row
@@ -11,7 +11,7 @@
       <v-btn
         v-for="link in links"
         :key="link"
-        color="white"
+        color="#D1515A"
         text
         rounded
         class="my-2"
@@ -19,10 +19,12 @@
         {{ link }}
       </v-btn>
       <v-col
-        class="primary lighten-2 py-4 text-center white--text"
+        class=" py-4 text-center"
+        style ="background-color: #122441; color: #D1515A" 
         cols="12"
+        
       >
-        {{ new Date().getFullYear() }} — <strong>Groupomania</strong>
+        {{ new Date().getFullYear() }} — <strong>MyGroupomania</strong>
       </v-col>
     </v-row>
   </v-Foot>
