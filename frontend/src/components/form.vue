@@ -2,18 +2,23 @@
   <v-container>
     <v-row>
       <v-col>
-          <v-form ref="form" lazy-validation>
+          <v-form ref="form"  >
             <v-text-field
               v-model="email"
               label="E-mail"
               required
-            ></v-text-field>
+            ></v-text-field><v-alert v-if="error" type="error">
+      Email invalide.
+    </v-alert>
 
             <v-text-field
               v-model="password"
               label="Password"
               required
             ></v-text-field>
+            <v-alert v-if="error"  type="error">
+      Password invalide.
+    </v-alert>
             <v-btn
               color="#D1515A"
               class="mr-4 white--text"
@@ -24,16 +29,6 @@
           </v-form>
       </v-col>
     </v-row>
-  
-    <v-row>
-      <v-col>
-        <p>Email: {{ email}}</p>
-        <p>Password: {{ password }}</p>
-        <p>Full name: {{ fullName }}</p>
-        <p>Nom de chien: {{ bindChien }}</p>
-      </v-col>
-    </v-row>
-  
   </v-container>
 </template>
 <script>
@@ -42,12 +37,12 @@ export default {
 
   props: [
 
-    'bindChien'
+    
 
   ],
   data: () => ({
     email : "",
-    password: ""
+    password: "",
   }),
   methods: {
     validate() {
@@ -55,11 +50,6 @@ export default {
     }
   },
 
-  computed: {
-    fullName() {
-      return this.email + " " + this.password;
-    }
-  },
 
 };
 </script>

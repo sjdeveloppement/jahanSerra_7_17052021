@@ -2,8 +2,7 @@
   <v-container class="sign-in">
     <h1>Se connecter</h1>
     <formulaire
-      :bindChien="chien"
-      @validFormStart="formValidFromChild"
+
     ></formulaire>
     
   </v-container>
@@ -22,13 +21,8 @@ export default {
     
   },
   data: () => ({
-    chien: "Toto",
+    
   }),
 
-  methods: {
-    formValidFromChild(name) {
-      console.log("Recevoir form valid de mon enfant: " + name);
-    },
-  },
 };
 </script>

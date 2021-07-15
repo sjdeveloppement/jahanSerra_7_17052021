@@ -1,7 +1,7 @@
 <template>
   <v-container class="home">
     <h1>MyGroupomania</h1>
-    <formulaire :bindChien ="chien" @validFormStart="formValidFromChild"></formulaire>
+    <formulaire ></formulaire>
     
   </v-container>
 </template>
@@ -19,7 +19,7 @@ export default {
   },
 
   data: () => ({
-    chien : "Toto"
+    
   }),
 
   methods: {

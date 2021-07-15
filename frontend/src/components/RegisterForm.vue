@@ -22,12 +22,13 @@
         required
         
       ></v-text-field>
-      <v-checkbox
-        v-model="checkbox"
+      <v-checkbox 
+        v-model="showValidatebtn"
+        v-on:click="showValidationbtn = !showValidationbtn"
         label="En validant cette case j'accepte la politique RGPD de l'application MyGroupomania."
         required
       ></v-checkbox>
-      <v-btn class="mr-4 white--text" style="background-color: #D1515A" > s'inscrire </v-btn>
+      <v-btn class="mr-4 white--text" style="background-color: #D1515A" v-show="!showValidationbtn"> s'inscrire </v-btn>
     </form>
   </v-container>
 </template>
@@ -41,7 +42,10 @@
             pseudoErrors: "Veuillez rentrer un pseudo valide ! ",
             emailErrors: "Veuillez rentrer une adresse mail valide !",
             passwordErrors: "Veuillez rentrer un mdp valide !",
-            checkboxErrors: "Veuillez accepter les conditions de la politique RGPD pour vous inscrire."
+            checkboxErrors: "Veuillez accepter les conditions de la politique RGPD pour vous inscrire.",
+            showValidationbtn: true,
+            
+            
 
 
         }),

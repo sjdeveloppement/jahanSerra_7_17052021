@@ -13,22 +13,35 @@
           background-color="grey lighten-2"
           color="#D1515A"
           label="Message"
+          
         >
         </v-textarea>
+        <v-file-input
+          id="fileUpload"
+          accept=".png, .jpeg, .jpg, .gif"
+          show-size
+          label="File input"
+          style="display: none"
+        ></v-file-input>
         <v-btn
-      class="mx-2"
-      fab
-      dark
-      color="#122441"
-      absolute
-      style="margin-top:-50px"
-    >
-      <v-icon dark>
-        mdi-plus
-      </v-icon>
-    </v-btn>
-        <v-btn depressed color="#122441" class="white--text" absolute
-      style="margin-top:-40px; margin-left: 75%">Send</v-btn>
+          @click="chooseFiles()"
+          class="mx-16"
+          fab
+          dark
+          color="#122441"
+          absolute
+          style="margin-top: -50px"
+        >
+          <v-icon dark> mdi-plus </v-icon>
+        </v-btn>
+        <v-btn
+          depressed
+          color="#122441"
+          class="white--text"
+          absolute
+          style="margin-top: -40px; margin-left: 75%"
+          >Send</v-btn
+        >
 
         <v-list two-line>
           <template v-for="(item, index) in items">
@@ -47,8 +60,16 @@
                 <v-list-item-subtitle
                   v-html="item.subtitle"
                 ></v-list-item-subtitle>
+                <v-text-field
+                  label="Comments"
+                  
+                  hide-details="auto"
+                ></v-text-field>
               </v-list-item-content>
-              <v-btn icon color="#D1515A"><v-icon>mdi-thumb-up</v-icon></v-btn>
+
+              <v-btn icon color="#D1515A" @click="disabledThump()"
+                ><v-icon id="like-btn">mdi-thumb-up</v-icon></v-btn
+              >
             </v-list-item>
           </template>
         </v-list>
@@ -61,7 +82,6 @@ export default {
   data() {
     return {
       items: [
-        
         {
           header: "Posted",
         },
@@ -115,7 +135,20 @@ export default {
             '<span class="font-weight-bold">Nancy</span> &mdash; Do you see what time it is?',
         },
       ],
+      rules: [
+        value => !!value || 'Required.',
+        value => (value && value.length >= 3) || 'Min 3 characters',
+      ],
     };
+    
+  },
+  methods: {
+    chooseFiles() {
+      document.getElementById("fileUpload").click();
+    },
+    disabledThump() {
+      console.log("ici je dois désactiver le btn like");
+    },
   },
 };
 </script>
