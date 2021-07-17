@@ -38,7 +38,7 @@
       links: [
         'Home',
         'About Us',
-        'Team',
+        'RGPD',
         'Services',
         'Contact Us',
       ],

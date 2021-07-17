@@ -7,7 +7,7 @@
     >
       <v-toolbar-title
           class="display-1 Bold text" 
-          style="cursor:pointer; color: #D1515A">Welcome !
+          style="cursor:pointer; color: #D1515A">Groupomania
       </v-toolbar-title>
 
       <v-spacer></v-spacer>

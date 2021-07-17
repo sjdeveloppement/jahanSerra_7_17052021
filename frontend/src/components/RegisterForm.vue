@@ -29,6 +29,7 @@
         required
       ></v-checkbox>
       <v-btn class="mr-4 white--text" style="background-color: #D1515A" v-show="!showValidationbtn"> s'inscrire </v-btn>
+      
     </form>
   </v-container>
 </template>
@@ -39,20 +40,22 @@
             pseudo : "",
             email: "",
             password: "",
-            pseudoErrors: "Veuillez rentrer un pseudo valide ! ",
-            emailErrors: "Veuillez rentrer une adresse mail valide !",
-            passwordErrors: "Veuillez rentrer un mdp valide !",
-            checkboxErrors: "Veuillez accepter les conditions de la politique RGPD pour vous inscrire.",
+            errors:{
+              pseudoErrors: "Veuillez rentrer un pseudo valide ! ",
+              emailErrors: "Veuillez rentrer une adresse mail valide !",
+              passwordErrors: "Veuillez rentrer un mdp valide !",
+              checkboxErrors: "Veuillez accepter les conditions de la politique RGPD pour vous inscrire.",
+            },
             showValidationbtn: true,
-            
-            
-
-
         }),
         methods:  {
             checkbox(){
                 console.log('checkbox');
-            }
+            },
+            doSomething(){
+              alert('yo');
+            },
+            
 
         }
     };

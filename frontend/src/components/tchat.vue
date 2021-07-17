@@ -67,9 +67,10 @@
                 ></v-text-field>
               </v-list-item-content>
 
-              <v-btn icon color="#D1515A" @click="disabledThump()"
-                ><v-icon id="like-btn">mdi-thumb-up</v-icon></v-btn
+              <v-btn icon color="#D1515A" @click="showHideThumbUp = false ,disabledThump()"
+                ><v-icon id="like-btn" v-show="showHideThumbUp">mdi-thumb-up</v-icon></v-btn
               >
+               <v-btn  v-if="deleteAccepted" icon color="#D1515A"><v-icon>mdi-cancel</v-icon></v-btn> <!--il va falloir gerer le cas où l'utilisateur est un admin ou l'auteur du message -->
             </v-list-item>
           </template>
         </v-list>
@@ -81,7 +82,7 @@
 export default {
   data() {
     return {
-      items: [
+      items: [// ici ce sera l'affichage des objets de la requete comme message_title, message_content mais aussi user_image et comment_content
         {
           header: "Posted",
         },
@@ -89,7 +90,7 @@ export default {
         {
           avatar: "https://picsum.photos/250/300?image=660",
           title: "Meeting @ Noon",
-          subtitle: `<span class="font-weight-bold">Spike Lee</span> &mdash; I'll be in your neighborhood`,
+          subtitle: `<span class="font-weight-bold">Spike Lee</span> &mdash; I'll be in your neighborhood!!`,
         },
         {
           avatar: "https://picsum.photos/250/300?image=821",
@@ -115,30 +116,12 @@ export default {
           subtitle:
             '<span class="font-weight-bold">Nancy</span> &mdash; Do you see what time it is?',
         },
-        {
-          avatar: "https://picsum.photos/250/300?image=1008",
-          title: "Breakfast?",
-          subtitle:
-            '<span class="font-weight-bold">LaToya</span> &mdash; Do you want to hang out?',
-        },
-        {
-          avatar: "https://picsum.photos/250/300?image=839",
-          title:
-            'Winter Porridge <span class="grey--text text--lighten-1"></span>',
-          subtitle:
-            '<span class="font-weight-bold">cc: Daniel</span> &mdash; Tell me more...',
-        },
-        {
-          avatar: "https://picsum.photos/250/300?image=145",
-          title: "Oui oui",
-          subtitle:
-            '<span class="font-weight-bold">Nancy</span> &mdash; Do you see what time it is?',
-        },
       ],
       rules: [
         value => !!value || 'Required.',
         value => (value && value.length >= 3) || 'Min 3 characters',
       ],
+      showHideThumbUp: true,
     };
     
   },

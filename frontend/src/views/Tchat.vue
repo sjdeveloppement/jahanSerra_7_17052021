@@ -9,6 +9,11 @@ export default{
     name: "Tchat",
     components:{
         tchat
-    }
+    },
+    
+
+        
+    
+    
 }
 </script>

@@ -98,7 +98,9 @@ exports.login = (req, res, next) => {
                             { userID: result[0].user_id },
                             process.env.JWT_SECRET_TOKEN,
                             { expiresIn: "24h" }
-                        )
+                        ),
+                        userID: result[0].user_id,
+                        
 
                     });
 
