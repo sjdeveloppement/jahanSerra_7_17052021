@@ -24,8 +24,8 @@
               class="mr-4 white--text"
               
               @click="login()"
-            >
-              Validate
+            ><span v-if="status == 'loading'">Connexion en cours</span>
+            <span v-else>Connexion</span>
             </v-btn>
             
           </v-form>

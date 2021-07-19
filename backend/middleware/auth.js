@@ -9,15 +9,13 @@ module.exports = (req, res, next) => {
         res.locals.userID = decodedToken.userID; // get the userid in a js object
         //console.log(res.locals.userID);
         // const user_isadmin = decodedToken.user_isadmin;
-        if (req.body.userId && req.body.userId !== userId) {
-            throw 'Invalid user ID';
-        } else {
-            req.token = token;
-            req.user = userId;
+        //console.log(decodedToken);
+        //console.log(userId);
+        //console.log(token);
             next();
-        }
+    
     } catch (error) {
-
+        
         res.status(401).json({ error: error | 'Requête non authentifiée !' });
     }
 };
