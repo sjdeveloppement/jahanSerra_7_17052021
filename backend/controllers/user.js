@@ -75,9 +75,7 @@ exports.login = (req, res, next) => {
     const sqlFindUser = "SELECT user_id, user_password FROM users WHERE user_mail = ?";
     //recherche de l'utilisateur dans la bdd
     sql.query(sqlFindUser, [email], function (err, result) {
-        if (err) {
-            return res.status(500).json(err.message);
-        }
+        
         
 
         if (result.length == 0) {

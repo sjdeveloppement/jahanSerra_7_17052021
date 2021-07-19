@@ -6,15 +6,21 @@
         <v-card-title class="mt-8"><p>Profil</p></v-card-title>
         <v-avatar size="160" >
       <img 
-        src="https://cdn.vuetifyjs.com/images/john.jpg"
+        :src="user.user_image"
         alt="img profil default"
       >
     </v-avatar>
     <v-spacer></v-spacer>
     <v-card-text class="font-weight-bold ml-2 mb-2">
-    <p >Mon pseudo : {{}}</p>
-    <p >Mon email: {{}}</p>
+    <p >Mon pseudo : {{user.user_pseudo}}</p>
+    <p >Mon email: {{user.user_mail}}</p>
     </v-card-text>
+    <v-btn @click="logout" class="ma-2"> <v-icon
+          dark
+          left
+        >
+          mdi-minus-circle
+        </v-icon>Déconnexion</v-btn>
     </div>
     </v-card>
     </div>
@@ -22,6 +28,7 @@
    
 </template>
 <script>
+import { mapState } from 'vuex'
 // const axios = require("axios").default;
 export default {
   name: 'Account',
@@ -33,6 +40,18 @@ export default {
       return;
     }
     this.$store.dispatch('getUserInfos');
+  },
+  computed: {
+    ...mapState({
+      user: 'userInfos',
+    })
+  },
+  methods:{
+    logout: function(){
+      this.$store.commit('logout');
+      this.$router.push('/sign-in');
+    }
   }
 }
+
 </script>

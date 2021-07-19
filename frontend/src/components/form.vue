@@ -60,17 +60,12 @@ export default {
         console.log(error);
       })
     },
-    /*sendPost() {
-      postData = { email: this.email, password: this.password };
-      axios
-        .post("http://localhost:3000/api/auth/login", postData)
-        .then(function (response) {
-          sessionStorage.setItem("userId", response.data.userID);
-          sessionStorage.setItem("token", response.data.token);
-          //sessionStorage.setItem("isadmin", response.data.user_isadmin);
-          router.push("account");
-        });
-    },*/
+  },
+  mounted: function(){
+     if(this.$store.state.user.userID != -1){
+      this.$router.push('/Account');
+      return;
+    }
   },
   computed:{
    ...mapState(['status'])

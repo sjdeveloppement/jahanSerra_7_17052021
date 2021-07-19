@@ -6,35 +6,42 @@ const instance = axios.create({
 });
 
 Vue.use(Vuex)
+instance.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+
 
 export default new Vuex.Store({
   state: {
     status: '',
     user: {
+      token: '',
       userID: -1,
-      token:'',
-    },
-    userInfos:{
-      user_pseudo:'',
-      user_mail:'',
-      user_image:'',
-    }
+    } 
+      ,
+    userInfos:''
   },
   mutations: {
     setStatus: function (state, status){
       state.status = status;
     },
     logUser: function (state, user){
-      instance.defaults.headers.common['Authorization'] = user.token; 
+      //instance.defaults.headers.common['Authorization'] = user.token; 
       
       state.user = user;
-      sessionStorage.setItem('token', state.user.token);
-      sessionStorage.setItem('userID', state.user.userID);//
+      localStorage.setItem('token', user.token);
+      localStorage.setItem('userID', JSON.stringify(user.userID));//
+      console.log(localStorage);
     },
     userInfos: function (state, userInfos){
       //instance.defaults.headers.common['Authorization'] = state.user.token;
       state.userInfos = userInfos;
     },
+    logout:function (state){
+      state.user ={
+        userID:-1,
+        token:'',
+      }
+      localStorage.removeItem('user');
+    }
   },
   actions: {
     login: ({commit}, userInfos)=>{
@@ -58,7 +65,7 @@ export default new Vuex.Store({
       commit('setStatus','loading');
       return new Promise((resolve, reject)=>{
         commit;
-        instance.post('/register', userInfos)
+        instance.post('register', userInfos)
         .then(function (response){
           commit('setStatus', 'created');
           resolve(response);
@@ -71,13 +78,16 @@ export default new Vuex.Store({
      
     },
     getUserInfos: ({commit})=>{
-      const getUserID = sessionStorage.getItem('userID');
+      const getUserID = localStorage.getItem('userID');
+      
+      //console.log(localStorage);
       //
-      instance.get('/users/'+ getUserID)
+      instance.get('/users/'+ getUserID, )
         .then(function (response){
           commit('userInfos', response.data);
         })
         .catch(function (error){
+         // console.log(sessionStorage);
           console.log(error.response);
         });
     }
