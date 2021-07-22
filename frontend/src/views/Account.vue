@@ -9,13 +9,14 @@
           </v-avatar>
           <!--User image -->
           <v-file-input
-    @change ="user_image($event)" type="file" id="myfile"
+    @change ="user_image($event)" type="file" id="file"
     :rules="rules"
     accept="image/png, image/jpeg, image/jpg, image/gif"
     placeholder="Pick an avatar"
     prepend-icon="mdi-camera"
     label="Avatar"
   ></v-file-input>
+  <v-btn class="ml-2 white--text" color="#D1515A" @click="sendImg()">Send Avatar</v-btn>
   <!--User image -->
           <v-spacer></v-spacer>
           <v-card-text class="font-weight-bold ml-2 mb-2">
@@ -70,26 +71,29 @@ export default {
       this.$store.commit("logout");
       this.$router.push("/sign-in");
     },
-    user_image(event){
+    sendImg(){
       //this.$store.state.user_image= event.target.files[0];
-      const URL = 'http://localhost:3000/api/auth/users/37/avatar';
-      let data = new FormData();
-      data.append('name', 'user_image');
-      data.append('file', event.target.files[0]);
-      let config={
-        header:{
-          'Content-Type': 'image/png'
-        }
-      }
+      const getUserID = localStorage.getItem('userID');
+      const URL = `http://localhost:3000/api/auth/users/${getUserID}/avatar`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+      //Récuperation de l'image
+      let img = document.getElementById('file').files[0]
+      //Création d'un formData obligatoire pour l'envoi de l'image
+
+      var formData = new FormData();
+      formData.append('img', img);
+      //Envoi des données sur l'url du serveur
       axios.put(
         URL,
-        data,
-        config
+        formData,
       ).then(
         response=>{
-          console.log('image upload response >', response)
+          console.log('image upload response ', response);
+          document.location.reload();
         }
-      )
+      ).catch((err)=>{
+        console.log(err.response)
+      })
     }
   },
 };
