@@ -8,7 +8,7 @@
       v-model="user_pseudo"
       :error-messages="pseudoErrors"
       label="Nickname"
-      
+      required
       @input="$v.user_pseudo.$touch()"
       @blur="$v.user_pseudo.$touch()"
     ></v-text-field>
@@ -16,7 +16,7 @@
       v-model="user_mail"
       :error-messages="emailErrors"
       label="E-mail"
-      
+      required
       @input="$v.user_mail.$touch()"
       @blur="$v.user_mail.$touch()"
     ></v-text-field>
@@ -27,12 +27,15 @@
       @click:append="show1 = !show1"
       :error-messages="passwordErrors"
       label="Password"
+      required
       @input="$v.user_password.$touch()"
       @blur="$v.user_password.$touch()"
     ></v-text-field>
      
 
     <v-btn
+    type="submit"
+    :disabled="isDisable(user_mail, user_password, user_pseudo)==false"
       class="mr-4"
       @click="submitModifUser"
     >
@@ -62,7 +65,6 @@ export default {
         user_mail:'',
         user_password:'',
         //user_image: '',
-       
       show1: false,
       
     }),
@@ -85,27 +87,32 @@ export default {
         !this.$v.user_password.minLength && errors.push('Password must be at least 8 characters long')
         return errors
       },
+     
     },
     methods: {// test modification de l'utilisateur
-    //
-        user_image(event){
-              this.$store.state.user_image = event.target.files[0];
+    isDisable(user_mail,user_password,user_pseudo) {
+    return user_mail.length > 0 && user_password.length>0 && user_pseudo.length>0;
+  },
+       // user_image(event){
+              //this.$store.state.user_image = event.target.files[0];
               //const user_image = event.target.files[0];
              // const formData = new FormData();
               //formData.append("user_image", user_image);
-            },
+            //},
             //
+            
         submitModifUser: function(){
             //const self = this;
             this.$store.dispatch('update',{
               user_pseudo: this.user_pseudo,
               user_mail: this.user_mail,
               user_password: this.user_password,
-              user_image: this.user_image,
+              //user_image: this.user_image,
             }).then(function(){
               console.log('updated');
               document.location.reload();
             }).catch(function(error){
+              
               console.log(error);
               
             })

@@ -9,7 +9,7 @@
           </v-avatar>
           <!--User image -->
           <v-file-input
-    @change ="user_image($event)" type="file" id="file"
+     type="file" id="file"
     :rules="rules"
     accept="image/png, image/jpeg, image/jpg, image/gif"
     placeholder="Pick an avatar"
@@ -33,7 +33,7 @@
     <br>
     <div style="display: flex; justify-content: center">
       
-      <v-btn class="button ma-2 white--text" color="#D1515A" ><v-icon dark left> mdi-cancel </v-icon> Delete Profil</v-btn>
+      <v-btn class="button ma-2 white--text" color="#D1515A" id="deleteProfil" ><v-icon dark left> mdi-cancel </v-icon> Delete Profil</v-btn>
     </div>
   </v-container>
 </template>
@@ -51,6 +51,7 @@ export default {
      rules: [
         value => !value || value.size < 1000000 || 'Avatar size should be less than 1 MB!',
       ],
+      user_image:'',
   }),
   mounted: function () {
     console.log(this.$store.state.user);

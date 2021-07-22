@@ -26,6 +26,13 @@ module.exports = (req, res, next)=>{
             error: "Le pseudo ne doit pas contenir des caractères spéciaux"
         })
     }
+    // check si le pseudo n'a pas moins de 2 caractères
+    if(!validator.isLength(req.body.user_pseudo,  {min:2, max: 255})){
+        
+        return res.status(400).json({
+            error: "Le pseudo ne doit pas être plus petit que 2 caractères"
+        })
+    }
     else{
         next();
     }
