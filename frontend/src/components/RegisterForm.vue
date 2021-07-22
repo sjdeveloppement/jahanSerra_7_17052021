@@ -27,7 +27,7 @@
       Identifiants invalide.
     </v-alert>
       <v-checkbox 
-        v-model="showValidatebtn"
+        v-model="checked"
         v-on:click="showValidationbtn = !showValidationbtn"
         label="En validant cette case j'accepte la politique RGPD de l'application MyGroupomania."
         required
@@ -55,6 +55,7 @@ import { mapState } from 'vuex';
               checkboxErrors: "Veuillez accepter les conditions de la politique RGPD pour vous inscrire.",
             },
             showValidationbtn: true,
+            checked: false,
         }),
         computed: {
           validatedFileds: function (){

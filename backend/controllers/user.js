@@ -25,7 +25,7 @@ schema
 
 //  signup : on regarde si le schema du mdp est respecté si ok -> cryptage du password, créer l'utilisateur avec le mdp crypté le pseudo et le mail, puis l'enregistre dans la bdd
 exports.signup = (req, res, next) => {
-    //validation de la requete
+    //validation de la requete si le password est valide
     if (!schema.validate(req.body.user_password)) {
         res.status(401).json({
             message: "Mot de passe incomplet, il faut minimum 8 caractères, 1 chiffre, 1 symbole, une majuscule et une minuscule et sans espace "
@@ -151,18 +151,20 @@ exports.findOne = (req, res, next) => {
 exports.update = (req, res, next) => {
     
     const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
+
+    // si je veux rajouter la modification de l'image en backend je dois : add dans la requete sql user_image=? puis dans le tableau add [ imgUser]
     const modifyCryptedPass = req.body.user_password;
         bcrypt.hash(modifyCryptedPass, 10)
             .then(hash => {
               
-                sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?, user_image=?  WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash, imgUser, req.params.user_id], function (error, results) {
+                sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?, user_image=?   WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash, imgUser,  req.params.user_id], function (error, results) {
                     if (error) {
                         console.log(req.body);
                         return res.status(500).json({ error });
                     } else if (results.length === 0) {
                         return res.status(401).json({ message: 'utilisateur inexistant' });
                     } else {
-                        console.log(imgUser)
+                        //console.log(imgUser)
                         return res.status(200).json({ message: 'utilisateur modifié' });
 
                     }
@@ -180,7 +182,7 @@ exports.delete = (req, res, next) => {
         if (err){
             res.status(500).json(err.message);
         }
-        if (result[0].user_isadmin == 1 ||user_id == userId){
+        if (result[0].user_isadmin == 1 || user_id == userId){
             sql.query('DELETE FROM users WHERE user_id=?', user_id, function (error, results) {
                 if (error) {
                     return res.status(500).json({ error });

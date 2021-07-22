@@ -3,7 +3,7 @@
     <v-col cols="12" sm="8" md="6">
       <v-card>
         <v-toolbar color="#D1515A" dark>
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
+          
 
           <v-toolbar-title>Messages</v-toolbar-title>
 
@@ -70,7 +70,7 @@
               <v-btn icon color="#D1515A" @click="showHideThumbUp = false ,disabledThump()"
                 ><v-icon id="like-btn" v-show="showHideThumbUp">mdi-thumb-up</v-icon></v-btn
               >
-               <v-btn  v-if="deleteAccepted" icon color="#D1515A"><v-icon>mdi-cancel</v-icon></v-btn> <!--il va falloir gerer le cas où l'utilisateur est un admin ou l'auteur du message -->
+               <v-btn  v-if="deleteAccepted == true" icon color="#D1515A"><v-icon>mdi-cancel</v-icon></v-btn> <!--il va falloir gerer le cas où l'utilisateur est un admin ou l'auteur du message -->
             </v-list-item>
           </template>
         </v-list>
@@ -122,6 +122,7 @@ export default {
         value => (value && value.length >= 3) || 'Min 3 characters',
       ],
       showHideThumbUp: true,
+      deleteAccepted: false,
     };
     
   },

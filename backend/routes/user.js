@@ -21,7 +21,7 @@ router.get('/users', auth, userCTRL.findAll);
 router.get('/users/:user_id', auth, userCTRL.findOne);
 
 //route de modification d'un utilisateur
-router.put('/users/:user_id', auth, multer, userCTRL.update);
+router.put('/users/:user_id', auth, multer,  userCTRL.update); // rajout de multer, si je veux gérer la modification d'image
 
 
 //Supprimer un utilisateur ! seulement pour les admin ou le proprietaire du compte

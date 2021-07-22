@@ -11,6 +11,13 @@ import RegisterForm from '../components/RegisterForm.vue';
 
 export default {
   components: { RegisterForm},
-  name: "Register ", 
+  name: "Register", 
+  mounted: function(){
+    // si l'utilisateur est  connecté go page d'account
+     if(localStorage.getItem('user')){
+      this.$router.push('/Account');
+      return;
+    }
+  },
 };
 </script>

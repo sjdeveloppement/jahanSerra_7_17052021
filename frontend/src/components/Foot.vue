@@ -1,6 +1,6 @@
 <template>
 <v-container>
-  <v-Foot
+  <v-footer
     color="#122441"
     padless
   >
@@ -27,7 +27,7 @@
         {{ new Date().getFullYear() }} — <strong>MyGroupomania</strong>
       </v-col>
     </v-row>
-  </v-Foot>
+  </v-footer>
 </v-container>
   
 </template>

@@ -62,6 +62,7 @@ export default {
     },
   },
   mounted: function(){
+    // si l'utilisateur est  connecté go page d'account
      if(this.$store.state.user.userID != -1){
       this.$router.push('/Account');
       return;
