@@ -30,14 +30,7 @@
       @input="$v.user_password.$touch()"
       @blur="$v.user_password.$touch()"
     ></v-text-field>
-     <v-file-input
-    @change ="user_image($event)" type="file" id="myfile"
-    :rules="rules"
-    accept="image/png, image/jpeg, image/jpg, image/gif"
-    placeholder="Pick an avatar"
-    prepend-icon="mdi-camera"
-    label="Avatar"
-  ></v-file-input>
+     
 
     <v-btn
       class="mr-4"
@@ -68,11 +61,10 @@ export default {
         user_pseudo:'',
         user_mail:'',
         user_password:'',
-        user_image: '',
-        rules: [
-        value => !value || value.size < 1000000 || 'Avatar size should be less than 1 MB!',
-      ],
+        //user_image: '',
+       
       show1: false,
+      
     }),
     computed:{
         pseudoErrors () {
@@ -98,9 +90,9 @@ export default {
     //
         user_image(event){
               this.$store.state.user_image = event.target.files[0];
-              const user_image = event.target.files[0];
-              const formData = new FormData();
-              formData.append("user_image", user_image);
+              //const user_image = event.target.files[0];
+             // const formData = new FormData();
+              //formData.append("user_image", user_image);
             },
             //
         submitModifUser: function(){
@@ -112,6 +104,7 @@ export default {
               user_image: this.user_image,
             }).then(function(){
               console.log('updated');
+              document.location.reload();
             }).catch(function(error){
               console.log(error);
               

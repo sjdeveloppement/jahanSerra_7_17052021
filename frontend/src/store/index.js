@@ -117,23 +117,32 @@ export default new Vuex.Store({
         });
     },
     // test udpate user 
-    update:({commit},userInfos, user_image, formData)=>{
+    update:({commit},userInfos)=>{
+      //context.state.user_image;
+     // console.log(context.state.user_image);
+      //console.log(user_image);
       const getUserID = localStorage.getItem('userID');
-      commit('setStatus','updating');
+      //commit('update');
       return new Promise((resolve, reject)=>{
-        commit;
-        instance.put('/users/'+ getUserID, userInfos, user_image, formData)
+        //commit;
+        instance.put('/users/'+ getUserID, userInfos)
         .then(function(response){
-          commit('setStatus', response.data);
+          commit('update', response.data);
           resolve(response);
+          
         })
         .catch(function(error){
-          commit('setStatus', 'error_update');
           console.log(userInfos);
+          commit('setStatus', 'error_update');
+          
           //console.log(formData);
           reject(error);
         })
       });
+    },
+    updateImg:(context, user_image)=>{
+      context.state.user_image
+      console.log(user_image);
     },
   },
   modules: {

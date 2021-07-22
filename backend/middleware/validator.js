@@ -13,7 +13,7 @@ module.exports = (req, res, next)=>{
         })
     }
     //check si il y a des caractère spéciaux dans l'email
-    if(validator.matches(req.body.user_pseudo, /^[<>*/|\s]+$/i)){
+    if(validator.matches(req.body.user_mail, /^[/$<>*/|\s]+$/i)){
         
         return res.status(400).json({
             error: "L'email ne doit pas contenir des caractères spéciaux"

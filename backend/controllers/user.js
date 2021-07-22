@@ -150,14 +150,14 @@ exports.findOne = (req, res, next) => {
 //update user
 exports.update = (req, res, next) => {
     
-    const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
+    //const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
 
     // si je veux rajouter la modification de l'image en backend je dois : add dans la requete sql user_image=? puis dans le tableau add [ imgUser]
     const modifyCryptedPass = req.body.user_password;
         bcrypt.hash(modifyCryptedPass, 10)
             .then(hash => {
               
-                sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?, user_image=?   WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash, imgUser,  req.params.user_id], function (error, results) {
+                sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?   WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash,  req.params.user_id], function (error, results) {
                     if (error) {
                         console.log(req.body);
                         return res.status(500).json({ error });
@@ -173,6 +173,28 @@ exports.update = (req, res, next) => {
             })
     
 };
+
+//udpate user image
+exports.updateImg = (req, res, next) => {
+    
+    const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
+
+    // si je veux rajouter la modification de l'image en backend je dois : add dans la requete sql user_image=? puis dans le tableau add [ imgUser]      
+                sql.query('UPDATE users SET user_image=? WHERE user_id=?', [ imgUser, req.params.user_id], function (error, results) {
+                    if (error) {
+                        console.log(req.body);
+                        return res.status(500).json({ error });
+                    } else if (results.length === 0) {
+                        return res.status(401).json({ message: 'utilisateur inexistant' });
+                    } else {
+                        //console.log(imgUser)
+                        return res.status(200).json({ message: 'Avatar utilisateur modifié' });
+
+                    }
+                });
+    
+};
+
 
 //Delete user on séléctionne l'id qui correspond dans la bdd à l'id séléctionner dans les paramètre de la req http et on verifie sa présence si ok suppression
 exports.delete = (req, res, next) => {
