@@ -72,7 +72,7 @@ exports.login = (req, res, next) => {
     const email = req.body.user_mail;
     const password = req.body.user_password;
 
-    const sqlFindUser = "SELECT user_id, user_password FROM users WHERE user_mail = ?";
+    const sqlFindUser = "SELECT user_id, user_password, user_isadmin FROM users WHERE user_mail = ?";
     //recherche de l'utilisateur dans la bdd
     sql.query(sqlFindUser, [email], function (err, result) {
         
@@ -98,6 +98,7 @@ exports.login = (req, res, next) => {
                             { expiresIn: "24h" }
                         ),
                         userID: result[0].user_id,
+                        user_isadmin: result[0].user_isadmin,
                         
 
                     });
@@ -204,7 +205,7 @@ exports.delete = (req, res, next) => {
         if (err){
             res.status(500).json(err.message);
             console.log(userId);
-            //console.log(result);
+            //console.log(result); 
         }
         if (result[0].user_isadmin === 1 || user_id == userId){
             sql.query('DELETE FROM users WHERE user_id= ? ', user_id, function (error, results) {

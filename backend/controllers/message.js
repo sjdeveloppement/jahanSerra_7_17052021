@@ -61,7 +61,7 @@ exports.createMessage = (req, res, next) => {
 //on recupère l'objet dans la bdd, on extrait le nom du fichier à supp et on le supp avec fs.unlink,
 // dans le callback on supp l'objet dans la base puis on renvoi la rep si cela à fonctionné ou pas.
 
-// à trouver le moyen de ne pas bloquer si l'utilisateur n'est pas admin mais qu'il est le createur du message
+// Amélioration possible trouver le moyen de ne pas bloquer si l'utilisateur n'est pas admin mais qu'il est le createur du message (optionnel)
 // je dois comparer l'id de l'utilisateur avec l'id de l'utilisateur qui a crée le message si c'est bon j'autorise la suppression de l'image puis du message
 
 exports.deleteMessage = (req, res, next) => {

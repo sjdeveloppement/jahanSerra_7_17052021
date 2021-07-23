@@ -5,11 +5,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 //const { Sequelize } = require('sequelize'); // si utilisation de l'orm sequelize 
 //const bodyParser = require('body-parser');
-//const User = require('./models/User');
-//const message = require('./models/message');
-//const messageCTRL= require('./controllers/message');
-//const connection = require('./models/db');
-//const dbConfig = require('./config/db.config');
 const helmet = require('helmet'); // sécurise les entêtes http
 const path = require('path'); //accès aux  chemins des fichiers
 const messageRoute = require('./routes/message');

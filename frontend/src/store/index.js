@@ -47,6 +47,7 @@ export default new Vuex.Store({
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', user.token);
       localStorage.setItem('userID', JSON.stringify(user.userID));//
+      localStorage.setItem('isadmin',JSON.stringify(user.user_isadmin));
       console.log(localStorage);
     },
     userInfos: function (state, userInfos){
