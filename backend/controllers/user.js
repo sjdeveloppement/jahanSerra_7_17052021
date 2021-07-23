@@ -200,18 +200,21 @@ exports.updateImg = (req, res, next) => {
 exports.delete = (req, res, next) => {
     const user_id = req.params.user_id;
     const userId = res.locals.userID;
-    sql.query("SELECT user_isadmin FROM users WHERE user_id=?", userId, function(err, result){
+    sql.query("SELECT user_isadmin FROM users WHERE user_id= ? ", userId, function(err, result){
         if (err){
             res.status(500).json(err.message);
+            console.log(userId);
+            //console.log(result);
         }
-        if (result[0].user_isadmin == 1 || user_id == userId){
-            sql.query('DELETE FROM users WHERE user_id=?', user_id, function (error, results) {
+        if (result[0].user_isadmin === 1 || user_id == userId){
+            sql.query('DELETE FROM users WHERE user_id= ? ', user_id, function (error, results) {
                 if (error) {
+                    
                     return res.status(500).json({ error });
                 } else if (results.length === 0) {
                     return res.status(401).json({ message: 'utilisateur introuvable' });
                 } else {
-                    return res.status(200).json({ user: results[0], message: 'profil supprimé' });
+                    return res.status(200).json({ message: 'profil supprimé' });
                 }
             });
         }else{

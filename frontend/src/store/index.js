@@ -76,7 +76,7 @@ export default new Vuex.Store({
         .then(function (response){
           commit('setStatus', '');
           commit('logUser', response.data);
-
+          document.location.reload();
           resolve(response);
         })
         .catch(function (error){
@@ -103,6 +103,7 @@ export default new Vuex.Store({
      
     },
     getUserInfos: ({commit})=>{
+     
       const getUserID = localStorage.getItem('userID');
       
       //console.log(localStorage);

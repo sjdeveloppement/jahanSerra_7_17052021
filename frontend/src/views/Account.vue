@@ -33,7 +33,7 @@
     <br>
     <div style="display: flex; justify-content: center">
       
-      <v-btn class="button ma-2 white--text" color="#D1515A" id="deleteProfil" ><v-icon dark left> mdi-cancel </v-icon> Delete Profil</v-btn>
+      <v-btn class="button ma-2 white--text" color="#D1515A" id="deleteProfil" type="sumbit" @click="DeleteProfil()" ><v-icon dark left> mdi-cancel </v-icon> Delete Profil</v-btn>
     </div>
   </v-container>
 </template>
@@ -95,7 +95,30 @@ export default {
       ).catch((err)=>{
         console.log(err.response)
       })
-    }
+    },
+    DeleteProfil(){
+      const getUserID = localStorage.getItem('userID');
+      
+      const URL = `http://localhost:3000/api/auth/users/${getUserID}`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+      axios.delete(
+        URL
+      ).then(
+        response=>{
+          this.$store.commit("logout");
+          this.$router.push("/sign-in");
+          localStorage.clear();
+          
+          
+          console.log(response);
+          
+        }
+      )
+      .catch(
+        console.log('error ')
+      )
+    },
+
   },
 };
 </script>
