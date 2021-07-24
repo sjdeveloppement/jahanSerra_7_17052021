@@ -35,6 +35,11 @@ export default new Vuex.Store({
     //
     user_image:'',
     //
+    messagesFromVueX:'',
+
+  },
+  getters:{
+    
   },
   mutations: {
     setStatus: function (state, status){
@@ -62,12 +67,16 @@ export default new Vuex.Store({
       }
       localStorage.removeItem('user');
     },
-    // test udpate user 
+    //  udpate user 
     update:function (state, userInfos, user_image){
       state.user_image = user_image;
       state.userInfos= userInfos;
 
     },
+    //test pour les messages du tchat
+    setMessagesTchatFromVuex(state,newValue){
+      state.messagesFromVueX = newValue;
+    }
   },
   actions: {
     login: ({commit}, userInfos)=>{

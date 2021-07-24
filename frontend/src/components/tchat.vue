@@ -11,8 +11,9 @@
         <v-form
           ><v-text-field
             v-model="message_title"
+            name="message_title"
             class="mt-6"
-            id="Message_title"
+            id="message_title"
             label="title"
             background-color="grey lighten-2"
             color="#122441"
@@ -54,39 +55,43 @@
         >
 
         <v-list three-line>
-          <template v-for="(item, index) in items">
-            <v-subheader v-if="item.header" :key="item.header" inset>
-              {{ item.header }}
+          <template v-for="(message, index) in messages">
+            <v-subheader v-if="message.header" :key="message.header" inset>
+              {{ message.header }}
             </v-subheader>
 
-            <v-divider v-else-if="item.divider" :key="index" inset></v-divider>
+            <v-divider v-else-if="message.divider" :key="index" inset></v-divider>
 
-            <v-list-item v-else :key="item.title" ripple>
+            <v-list-item v-else :key="message.message_title" ripple>
               <v-list-item-avatar>
-                <img :src="item.avatar" />
+                <img :src="message.user_image" />
               </v-list-item-avatar>
+              
               <v-list-item-content>
-                <v-list-item-title v-html="item.title"></v-list-item-title>
+                <div><v-list-item-title  style="color:#D1515A" v-html="message.user_pseudo"></v-list-item-title>
+                <v-list-item-subtitle v-html="message.message_createdat"></v-list-item-subtitle>
+                </div>
+                
+                <v-list-item-title v-html="message.message_title"></v-list-item-title>
                 
                 <v-list-item-subtitle
-                  v-html="item.subtitle"
+                  v-html="message.message_content"
                 ></v-list-item-subtitle>
-                <v-list-item-image v-if="item.img != ''">
-                  <v-img :src="item.img" style="width: 25%"
-                /></v-list-item-image>
                 
+                  <v-img v-if="message.message_image != ''" :src="message.message_image" style="width: 25%"
+                />
                 <br>
                 
-                <v-list-item-comments  v-if="item.comments != ''"
-                  ><v-card style="display:flex; justify-content: space-between"
+                
+                  <v-card v-if="message.comments != ''" style="display:flex; justify-content: space-between"
                     ><div style="box-shadow: 1px 1px 10px #D1515A"><v-list-item-avatar
-                      ><v-img :src="item.avatarcomment"
+                      ><v-img :src="message.avatarcomment"
                     /></v-list-item-avatar>
-                    <p v-html="item.pseudocomment"></p></div>
+                    <p v-html="message.pseudocomment"></p></div>
                     <div class="ml-2"> 
-                    <p v-html="item.comments"></p></div>
+                    <p v-html="message.comments"></p></div>
                    </v-card
-                ></v-list-item-comments>
+                >
 
                 <v-spacer></v-spacer>
                 <v-text-field
@@ -111,12 +116,13 @@
             </v-list-item>
           </template>
         </v-list>
+        {{messages[0]}}
       </v-card>
     </v-col>
   </v-row>
 </template>
 <script>
-//const axios = require("axios");
+const axios = require("axios");
 export default {
   name: "tchat",
   props: ["tchatData"],
@@ -128,53 +134,19 @@ export default {
         emptyContent: false,
         user_isadmin: localStorage.getItem('isadmin'),
       },
-      items: [
+      message_title:'',
+      message_content:'',
+      comment_content:'',
+
+      infos:'',
+      messages: [
         // ici ce sera l'affichage des objets de la requete comme message_title, message_content mais aussi user_image et comment_content
         {
           header: "Posted",
         },
         { divider: true },
-        {
-          avatar: "https://picsum.photos/250/300?image=660",
-          title: "Meeting @ Noon",
-          subtitle: `<span class="font-weight-bold">Spike Lee</span> &mdash; I'll be in your neighborhood!!`,
-          img: "https://picsum.photos/250/300?image=660",
-          comments: "",
-        },
-        {
-          avatar: "https://picsum.photos/250/300?image=821",
-          title: 'Summer BBQ <span class="grey--text text--lighten-1"></span>',
-          subtitle:
-            '<span class="font-weight-bold">to Operations support</span> &mdash; Wish I could come.',
-          img: "",
-          comments: "",
-        },
-        {
-          avatar: "https://picsum.photos/250/300?image=783",
-          title: "Yes yes",
-          subtitle:
-            '<span class="font-weight-bold">Bella</span> &mdash; Do you have Paris recommendations',
-          img: "",
-          comments: "",
-        },
-        {
-          avatar: "https://picsum.photos/250/300?image=1006",
-          title: "Dinner tonight?",
-          subtitle:
-            '<span class="font-weight-bold">LaToya</span> &mdash; Do you want to hang out?',
-          img: "",
-          comments: "",
-        },
-        {
-          avatar: "https://picsum.photos/250/300?image=146",
-          title: "So long",
-          subtitle:
-            '<span class="font-weight-bold">Nancy</span> &mdash; Do you see what time it is?',
-          img: "https://picsum.photos/250/300?image=146",
-          comments: "wow la galère ce Tchat en vue.js",
-          avatarcomment: "https://picsum.photos/250/300?image=821",
-          pseudocomment: "Summer BBQ",
-        },
+        
+        
       ],
       rules: [
         (value) => !!value || "Required.",
@@ -183,6 +155,12 @@ export default {
       showHideThumbUp: true,
       deleteAccepted: false,
     };
+  },
+  computed:{
+    messagesTchat(){
+      return this.$store.state.messagesFromVueX;
+    },
+    
   },
   methods: {
     chooseFiles() {
@@ -198,13 +176,21 @@ export default {
         return false;
       }
     },
-    //refresh post when add new one notifyParent()
+    
+   /* //refresh post when add new one notifyParent()
     refreshPost(){
       this.$emit("refresh");
+    },*/
+    //methode pour update les messages
+    getMessages(){
+      const URL = "http://localhost:3000/api/message";
+      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+      axios.get(URL).then(response => (this.messages = response.data.message))
+      .catch(error => console.log(error))
     },
     //fonctionnalitées à finir
    /* deletePost(){
-      const message_id = this.postData.message_id;
+      const message_id = this.tchatData.message_id;
       const getUserID = localStorage.getItem('userID');
       const URL = `http://localhost:3000/api/message/${message_id}`;
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
@@ -222,7 +208,7 @@ export default {
       });
     },
     getComments(){
-      const message_id = this.postData.message_id;
+      const message_id = this.tchatData.message_id;
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
       axios.get("http://localhost:3000/api/comment/"+ message_id)
       .then((response)=>{
@@ -235,9 +221,9 @@ export default {
         this.emptyContent = true;
         return console.log("commentary can't be empty");
       }
-      const message_id = this.postData.message_id;
+      const message_id = this.tchatData.message_id;
       const commentData = {
-        message_id: this.postData.message_id,
+        message_id: this.tchatData.message_id,
         message_content: this.message_content,
         user_id: localStorage.getItem('userID'),
       };
@@ -247,10 +233,13 @@ export default {
         this.comment_content ='';
         this.getComments();
       });
-    },
-    mounted(){
-      this.getComments();
     },*/
+    
   },
+  mounted(){
+      //this.getComments();
+      this.getMessages();
+      
+    },
 };
 </script>
