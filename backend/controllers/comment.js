@@ -5,7 +5,7 @@ const Comment = require("../models/comment");
 // get all comment
 exports.getAllComment = (req, res)=>{
     const message_id = req.params.message_id;
-    sql.query('SELECT * FROM `comment` JOIN message WHERE message.message_id = comment.message_id  ORDER BY comment.comment_id DESC', function (error, result){
+    sql.query('SELECT * FROM `comment` JOIN message WHERE message.message_id = comment.message_id  ORDER BY comment.comment_id DESC',  function (error, result){
         if (error){
             return res.status(500).json({ error });
         }
