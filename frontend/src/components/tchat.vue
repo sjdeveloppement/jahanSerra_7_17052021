@@ -60,7 +60,7 @@
         >
 
         <v-list three-line>
-          <template v-for="(message, index) in messages">
+          <template v-for="(message, index) in messages"  >
             <v-subheader v-if="message.header" :key="message.header" inset>
               {{ message.header }}
             </v-subheader>
@@ -117,29 +117,39 @@
                 </v-card></div>-->
 
                 <v-spacer></v-spacer>
+                <!-- système de commentaire à faire après le mvp 
                 <v-text-field
                   v-model="comment_content"
                   label="Comments"
                   hide-details="auto"
-                ></v-text-field>
+                ></v-text-field>-->
+                <v-spacer></v-spacer>
+                <v-divider></v-divider>
               </v-list-item-content>
-
+              
+              <!-- compteur de like -->
+              <div  v-html="message.message_appreciation"></div>
               <v-btn
+                :key="message.message_id"
+                
                 icon
                 color="#D1515A"
-                @click="(showHideThumbUp = false), disabledThump()"
-                ><v-icon id="like-btn" v-show="showHideThumbUp"
+                @click=" likeMessage(message), disabledThump(message) "
+                ><v-icon  id="like-btn" :disabled="!isActive"
                   >mdi-thumb-up</v-icon
                 ></v-btn
-              ><!-- gere le cas où l'utilisateur est un admin  -->
-              <v-btn v-if="checkadmin() == true" icon color="#D1515A"
-                ><v-icon>mdi-cancel</v-icon></v-btn
+              >
+              <!-- gere le cas où l'utilisateur est un admin  -->
+              <v-btn v-if="checkadmin() == true"
+               :key="message.message_id" 
+               @click="deleteMessage(message)" 
+                icon color="#D1515A"
+                ><v-icon  >mdi-cancel</v-icon></v-btn
               >
             </v-list-item>
           </template>
         </v-list>
-        <!-- à enlever ligne en dessous -->
-        {{ messages[0] }} 
+        
       </v-card>
     </v-col>
   </v-row>
@@ -158,10 +168,10 @@ export default {
         emptyContent: false,
         user_isadmin: localStorage.getItem("isadmin"),
       },
-      
+      isActive: true,
       message_title: "",
       message_content: "",
-      
+      message_appreciation: "",
       comment_content: "",
 
       infos: "",
@@ -179,19 +189,18 @@ export default {
       ],
       showHideThumbUp: true,
       deleteAccepted: false,
+      
     };
   },
-  computed: {
-    messagesTchat() {
-      return this.$store.state.messagesFromVueX;
-    },
-  },
+  
   methods: {
     chooseFiles() {
       document.getElementById("message_image").click();
     },
-    disabledThump() {
-      console.log("ici je dois désactiver le btn like");
+    disabledThump(message) {
+      message.message_id = document.getElementById('like-btn').value;
+      console.log(message.message_id);
+      this.isActive= false;
     },
     checkadmin() {
       if (localStorage.getItem("isadmin") == 1) {
@@ -215,12 +224,12 @@ export default {
       // utilisation de formdata pour le json et les fichiers simultanément
       
       let message_image = document.querySelector('#message_image').files[0];
-      console.log(message_image);
+     // console.log(message_image);
       const form = new FormData();
       form.append("message_title", this.message_title);
       form.append("message_content", this.message_content);
       form.append("message_image", message_image);
-      console.log(form);
+      //console.log(form);
       
       
       axios.defaults.headers.common[
@@ -263,16 +272,28 @@ export default {
       
     },*/
     //fonctionnalitées à finir
-    /* deletePost(){
-      const message_id = this.tchatData.message_id;
-      const getUserID = localStorage.getItem('userID');
-      const URL = `http://localhost:3000/api/message/${message_id}`;
+     deleteMessage(message){
+
+      //const message_id = this.message.message_id;
+      //const getUserID = localStorage.getItem('userID');
+      const URL = `http://localhost:3000/api/message/${message.message_id}`;
+      
+      
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
       axios.delete(URL).then(()=>{
         console.log("message supprimé");
-        this.refreshPost();
+        this.refreshPost(message);
       });
     },
+    likeMessage(message){
+      const URL = `http://localhost:3000/api/message/${message.message_id}/appreciation`;
+      
+      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+      axios.post(URL).then(()=>{
+        
+        this.refreshPost(message)
+      })
+    },/*
     deleteComment(comment_id){
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
       axios.delete("http://localhost:3000/api/comment/"+ comment_id)
