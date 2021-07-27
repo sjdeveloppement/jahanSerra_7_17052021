@@ -17,15 +17,23 @@
             label="title"
             background-color="grey lighten-2"
             color="#122441"
+            @input="$v.message_title.$touch()"
+            @blur="$v.message_title.$touch()"
+            :error-messages="titleErrors"
+            required
           ></v-text-field>
           <v-textarea
             v-model="message_content"
             background-color="grey lighten-2"
             color="#122441"
             label="Message"
+            @input="$v.message_content.$touch()"
+            @blur="$v.message_content.$touch()"
+            :error-messages="contentErrors"
           >
           </v-textarea>
           <v-file-input
+          
             name="file"
             type="file"
             id="message_image"
@@ -124,6 +132,21 @@
                 </v-card></div>-->
 
                 <v-spacer></v-spacer>
+                <!-- update message btn -->
+                 <v-btn
+                    class="mb-6"
+                    right
+                    bottom
+                    fab
+                    dark
+                    x-small
+                    absolute
+                    color="#122441"
+                  >
+                    <v-icon dark>
+                      mdi-pencil
+                    </v-icon>
+                  </v-btn>
                 <!-- système de commentaire à faire après le mvp 
                 <v-text-field
                   v-model="comment_content"
@@ -164,11 +187,20 @@
   
 </template>
 <script>
+import { validationMixin } from 'vuelidate'
+import { required, helpers } from 'vuelidate/lib/validators'
 import FormData from 'form-data';
 const axios = require("axios");
+const alpha = helpers.regex("alpha", /^[a-zéèùâûêîôàùç?!'"\d\-_\s]+$/i);
 export default {
   name: "tchat",
   props: ["tchatData"],
+  mixins:[validationMixin],
+  
+  validations: {
+    message_title: {required,  alpha },
+    message_content: {required,  alpha },
+  },
   data() {
     return {
       modes: {
@@ -203,6 +235,20 @@ export default {
       likeErr: false,
       
     };
+  },
+  computed:{
+    titleErrors () {
+        const errors = []
+        if (!this.$v.message_title.$dirty) return errors
+        !this.$v.message_title.alpha && errors.push('title must be alphaNumeric')
+        return errors
+      },
+       contentErrors () {
+        const errors = []
+        if (!this.$v.message_content.$dirty) return errors
+        !this.$v.message_content.alpha && errors.push('text only')
+        return errors
+      },
   },
   
   methods: {

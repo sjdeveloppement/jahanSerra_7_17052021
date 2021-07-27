@@ -5,6 +5,8 @@ const connection = require("../models/db");
 const { createPool } = require('mysql');
 const jwt = require('jsonwebtoken');
 const userSchema = require("../models/user");
+const MessageSchema = require("../models/message");
+const { default: axios } = require("axios");
 
 
 
@@ -209,18 +211,29 @@ exports.getOneMessage = (res, req, next) => {
     .then(message => res.status(200).json(message))
     .catch(error => res.status(404).json(error));
 
-};
+};*/
 
 // update message
 exports.modifyMessage = (req, res, next) => {
-    // test si il y a une image dans le message car selon le cas traitement différent.
-    const messageObject = req.file ?
-    // Si la modification contient une image => Utilisation de l'opérateur ternaire comme structure conditionnelle.
-    {
-        ...JSON.parse(req.body.message),
-        message_image: `${req.protocol}://${req.get('host')}/images/${req.files.filename}`
-    } : { ...req.body };
-    Message.updateOne({ _id: req.params.id}, {...messageObject, _id:req.params.id })
-    .then(()=> res.status(200).json({ message: 'Message modifié ! '})
-    .catch(error => res.status(400).json({ error })));
-};*/
+    
+// Si la modification contient une image => Utilisation de l'opérateur ternaire comme structure conditionnelle.
+    let user_id= res.locals.userID;
+    let message_id = req.params.message_id;
+    let message_image = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`
+    
+    sql.query("UPDATE message SET message_title = ? , message_content = ? , message_image = ? WHERE message_id = ? AND user_id = ? ",
+    [req.body.message_title, req.body.message_content, message_image, message_id, user_id  ], function(error, results){
+        if (error){
+            console.log(req.body);
+            console.log(message_image);
+            return res.status(500).json({ error });
+        }
+        else if(results.length === 0){
+            return res.status(404).json({ message: 'message introuvable' });
+        }else{
+            console.log(message_image);
+            return res.status(200).json({ message: 'Message modifié ! '});
+        }
+    })
+    
+};
