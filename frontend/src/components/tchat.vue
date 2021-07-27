@@ -58,8 +58,15 @@
             >Send</v-btn
           ></v-form
         >
-
+        
         <v-list three-line>
+          <v-overlay  v-if="likeErr == true" :absolute="absolute" 
+          :value="overlay"><v-btn
+            color="error"
+            @click="overlay = false, likeErr=false"
+          >
+            Already liked
+          </v-btn></v-overlay>
           <template v-for="(message, index) in messages"  >
             <v-subheader v-if="message.header" :key="message.header" inset>
               {{ message.header }}
@@ -94,10 +101,10 @@
                 <v-list-item-subtitle
                   v-html="message.message_content"
                 ></v-list-item-subtitle>
-                <div ><v-img
+                <div style="max-height: 400px;  display:flex; justify-content: center" ><v-img
                   v-if="message.message_image != ''"
                   :src="message.message_image"
-                  style="width:50%"
+                  style="width:100%"
                 /></div>
                 
                 <br />
@@ -130,7 +137,7 @@
               <!-- compteur de like -->
               <div  v-html="message.message_appreciation"></div>
               <v-btn
-                :key="message.message_id"
+                :key="message.message_appreciation"
                 
                 icon
                 color="#D1515A"
@@ -139,6 +146,7 @@
                   >mdi-thumb-up</v-icon
                 ></v-btn
               >
+              
               <!-- gere le cas où l'utilisateur est un admin  -->
               <v-btn v-if="checkadmin() == true"
                :key="message.message_id" 
@@ -153,6 +161,7 @@
       </v-card>
     </v-col>
   </v-row>
+  
 </template>
 <script>
 import FormData from 'form-data';
@@ -173,7 +182,9 @@ export default {
       message_content: "",
       message_appreciation: "",
       comment_content: "",
-
+      absolute: true,
+      overlay: false,
+      
       infos: "",
       comments:[],
       messages: [
@@ -189,6 +200,7 @@ export default {
       ],
       showHideThumbUp: true,
       deleteAccepted: false,
+      likeErr: false,
       
     };
   },
@@ -198,9 +210,10 @@ export default {
       document.getElementById("message_image").click();
     },
     disabledThump(message) {
-      message.message_id = document.getElementById('like-btn').value;
-      console.log(message.message_id);
-      this.isActive= false;
+     //message.message_id = document.getElementById('like-btn').value;
+      console.log(message);
+      //this.isActive= false;  //disabling the like btn
+     
     },
     checkadmin() {
       if (localStorage.getItem("isadmin") == 1) {
@@ -283,15 +296,20 @@ export default {
       axios.delete(URL).then(()=>{
         console.log("message supprimé");
         this.refreshPost(message);
+        document.location.reload();
       });
     },
     likeMessage(message){
-      const URL = `http://localhost:3000/api/message/${message.message_id}/appreciation`;
       
+      const URL = `http://localhost:3000/api/message/${message.message_id}/appreciation`;
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
       axios.post(URL).then(()=>{
-        
-        this.refreshPost(message)
+        console.log(message);
+        this.refreshPost(message);
+        document.location.reload();
+      }).catch((error)=>{
+        error,this.overlay=true, this.likeErr=true
+      
       })
     },/*
     deleteComment(comment_id){

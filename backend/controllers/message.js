@@ -151,7 +151,7 @@ exports.deleteMessage = (req, res, next) => {
 exports.likeAppreciation = (req, res) => {
     // un compteur de like qui s'incrémente quand un nouvel utilisateur clique sur le bouton j'aime
     // quand l'utilisateur clique il ne peut plus re cliquer sur j'aime 
-    let appreciation = req.body.appreciation;
+    
     const userId = res.locals.userID;
 
     // on recupère l'id du message
@@ -165,6 +165,7 @@ exports.likeAppreciation = (req, res) => {
     values = [message_id, userId];
     sql.query(CheckAlreadyLiked, values, function (err, result) {
         if (err) {
+            
             return res.status(500).json(err.message)
         }
         // si un appreciation_id est trouvé alors on bloque, sinon on ajoute le like de l'utilisateur au message dans la table appreciation.
