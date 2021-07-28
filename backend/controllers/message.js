@@ -216,7 +216,7 @@ exports.getOneMessage = (res, req, next) => {
 // update message
 exports.modifyMessage = (req, res, next) => {
     
-// Si la modification contient une image => Utilisation de l'opérateur ternaire comme structure conditionnelle.
+
     let user_id= res.locals.userID;
     let message_id = req.params.message_id;
     let message_image = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`
