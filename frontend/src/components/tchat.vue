@@ -153,12 +153,16 @@
                           <v-icon dark> mdi-pencil </v-icon>
                         </v-btn>
                
-                <!-- système de commentaire à faire après le mvp 
+                <!-- système de commentaire à faire après le mvp--> 
+                <v-divider></v-divider>
                 <v-text-field
                   v-model="comment_content"
                   label="Comments"
                   hide-details="auto"
-                ></v-text-field>-->
+                  color="#122441"
+                ></v-text-field>
+                <v-spacer></v-spacer>
+                <comments></comments>
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
               </v-list-item-content>
@@ -188,7 +192,7 @@
           </template>
         </v-list>
          <!-- dialogs -->
-                <template v-if="dialog==true" >
+                <template v-if="dialog==true && this.selectedMessageUserID==userID" >
                   
                   <v-row justify="center">
                     
@@ -260,6 +264,7 @@
                     </v-dialog>
                   </v-row>
                 </template>
+                
                 <!-- end of dialogs -->
       </v-card>
     </v-col>
@@ -269,12 +274,16 @@
 import { validationMixin } from "vuelidate";
 import { required, helpers } from "vuelidate/lib/validators";
 import FormData from "form-data";
+import comments from "@/components/comments.vue"
 const axios = require("axios");
 const alpha = helpers.regex("alpha", /^[a-zéèùâûêîôàùç?!'"\d\-_\s]+$/i);
 export default {
   name: "tchat",
   props: ["tchatData"],
   mixins: [validationMixin],
+  components:{
+    comments
+  },
 
   validations: {
     message_title: { required, alpha },
@@ -288,7 +297,9 @@ export default {
         emptyContent: false,
         user_isadmin: localStorage.getItem("isadmin"),
       },
+      userID : localStorage.getItem('userID'),
       selectedMessage: null,
+      selectedMessageUserID: '',
       isActive: true,
       message_title: "",
       message_content: "",
@@ -337,8 +348,9 @@ export default {
     },
     checkActive(message,index){
       this.selectedMessage = message.message_id;
+      this.selectedMessageUserID = message.user_id;
       this.indexClicked = index;
-      console.log(this.selectedMessage);
+      
     },
     disabledThump(message) {
       //message.message_id = document.getElementById('like-btn').value;
@@ -365,12 +377,12 @@ export default {
       // utilisation de formdata pour le json et les fichiers simultanément
 
       let message_image = document.querySelector("#message_image").files[0];
-      // console.log(message_image);
+      
       const form = new FormData();
       form.append("message_title", this.message_title);
       form.append("message_content", this.message_content);
       form.append("message_image", message_image);
-      //console.log(form);
+      
 
       axios.defaults.headers.common[
         "Authorization"
@@ -434,20 +446,19 @@ export default {
       .then((response)=>{
         this.allComments = response.data.comments
       })
-      .catch((error) => console.log(error));
+      
       
     },*/
-    //fonctionnalitées à finir
+    
     deleteMessage(message) {
-      //const message_id = this.message.message_id;
-      //const getUserID = localStorage.getItem('userID');
+      
       const URL = `http://localhost:3000/api/message/${message.message_id}`;
 
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${localStorage.token}`;
       axios.delete(URL).then(() => {
-        console.log("message supprimé");
+        
         this.refreshPost(message);
         document.location.reload();
       });
@@ -460,7 +471,7 @@ export default {
       axios
         .post(URL)
         .then(() => {
-          console.log(message);
+          
           this.refreshPost(message);
           document.location.reload();
         })
@@ -472,7 +483,7 @@ export default {
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
       axios.delete("http://localhost:3000/api/comment/"+ comment_id)
       .then(()=>{
-        console.log("Commentaire supprimé");
+        
         this.getComments();
       });
     },*/,
