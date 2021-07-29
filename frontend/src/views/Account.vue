@@ -3,7 +3,7 @@
     <div>
       <v-card width="400">
         <div class="pl-1">
-          <v-card-title class="mt-8"><p>Profil</p></v-card-title>
+          <v-card-title class="mt-8"><h1>Profil</h1></v-card-title>
           <v-avatar size="160">
             <img :src="user.user_image" alt="avatar" />
           </v-avatar>
@@ -16,14 +16,14 @@
     prepend-icon="mdi-camera"
     label="Avatar"
   ></v-file-input>
-  <v-btn class="ml-2 white--text" color="#D1515A" @click="sendImg()">Send Avatar</v-btn>
+  <v-btn class="ml-2 white--text" name="send" color="#D1515A" @click="sendImg()">Send Avatar</v-btn>
   <!--User image -->
           <v-spacer></v-spacer>
           <v-card-text class="font-weight-bold ml-2 mb-2">
             <p>My Nickname : {{ user.user_pseudo }}</p>
             <p>My email: {{ user.user_mail }}</p>
           </v-card-text>
-          <v-btn @click="logout" class="ma-2">
+          <v-btn @click="logout" name="disconnect" class="ma-2">
             <v-icon dark left> mdi-minus-circle </v-icon>Disconnect</v-btn
           >
         </div>
@@ -33,7 +33,7 @@
     <br>
     <div style="display: flex; justify-content: center">
       
-      <v-btn class="button ma-2 white--text" color="#D1515A" id="deleteProfil" type="sumbit" @click="DeleteProfil()" ><v-icon dark left> mdi-cancel </v-icon> Delete Profil</v-btn>
+      <v-btn class="button ma-2 white--text" color="#D1515A" id="deleteProfil" name="deleteprofil" type="sumbit" @click="DeleteProfil()" ><v-icon dark left> mdi-cancel </v-icon> Delete Profil</v-btn>
     </div>
   </v-container>
 </template>
@@ -54,7 +54,7 @@ export default {
       user_image:'',
   }),
   mounted: function () {
-    console.log(this.$store.state.user);
+    //console.log(this.$store.state.user);
     // si l'utilisateur n'est pas connecté go page de connexion sinon j'affiche les infos
     if (this.$store.state.user.userID == -1) {
       this.$router.push("/sign-in");

@@ -150,7 +150,12 @@ exports.findOne = (req, res, next) => {
 
 //update user
 exports.update = (req, res, next) => {
-    
+    if (!schema.validate(req.body.user_password)) {
+        res.status(401).json({
+            message: "Mot de passe incomplet, il faut minimum 8 caractères, 1 chiffre, 1 symbole, une majuscule et une minuscule et sans espace "
+        });
+        return false;
+    }
     //const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
 
     // si je veux rajouter la modification de l'image en backend je dois : add dans la requete sql user_image=? puis dans le tableau add [ imgUser]

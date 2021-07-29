@@ -17,7 +17,7 @@
         required
       ></v-text-field>
       <v-alert v-if="status == 'error_create'" type="error">
-        Identifiants invalide.
+        Identifiant et/ou mot de passe invalide 1 majuscule, 1 minuscule, 1 caractères spécial et 8 caractères minimum!
       </v-alert>
       <v-checkbox
         v-model="checked"

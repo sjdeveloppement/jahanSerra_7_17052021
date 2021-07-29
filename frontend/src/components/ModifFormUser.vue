@@ -2,7 +2,7 @@
  
         <form>
             <v-card class=" mt-3 pl-3 pr-3 pt-3 pb-3 ">
-              <v-card-title>Update infos</v-card-title>
+              <v-card-title><h2>Update infos</h2></v-card-title>
              
     <v-text-field
       v-model="user_pseudo"

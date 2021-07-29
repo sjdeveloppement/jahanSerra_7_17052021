@@ -14,12 +14,13 @@
         color="#D1515A"
         text
         rounded
-        class="my-2"
+        class="my-2 font-weight-bold"
       >
         {{ link }}
       </v-btn>
       <v-col
-        class=" py-4 text-center"
+
+        class=" py-4 text-center font-weight-bold"
         style ="background-color: #122441; color: #D1515A" 
         cols="12"
         

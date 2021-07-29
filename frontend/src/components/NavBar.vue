@@ -12,34 +12,30 @@
 
       <v-spacer></v-spacer>
     <v-btn 
-        :to="home"
-        text
-    >
-    <span class="mr-2" style ="color: #D1515A">Home</span>
-    </v-btn>
-    <v-btn 
         :to="sign"
         text
     >
-    <span class="mr-2" style ="color: #D1515A">Sign in</span>
+    <span class="mr-2" style ="color: #D1515A"><strong>Sign in</strong></span>
     </v-btn>
     <v-btn 
         :to="register"
         text
     >
-    <span class="mr-2" style ="color: #D1515A">Register</span>
+    <span class="mr-2" style ="color: #D1515A"><strong>Register</strong></span>
     </v-btn>
-    <v-btn 
+    <v-btn
+        
         :to="account"
         text
+        
     >
-    <span class="mr-2" style ="color: #D1515A">Account</span>
+    <span class="mr-2" style ="color: #D1515A"><strong>Account</strong></span>
     </v-btn>
     <v-btn 
         :to="tchat"
         text
     >
-    <span class="mr-2" style ="color: #D1515A">Tchat</span>
+    <span class="mr-2" style ="color: #D1515A"><strong>Tchat</strong></span>
     </v-btn>
     </v-app-bar>
   </nav>
@@ -53,13 +49,12 @@ export default {
   },
   
   data: () => ({
-
+      
       home: "/",
       sign: "/sign-in",
       register: "/register",
       account: "/account",
       tchat: "/tchat"
-
   })
 
 }

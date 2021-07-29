@@ -3,7 +3,7 @@
     <v-col cols="12" sm="8" md="6">
       <v-card>
         <v-toolbar color="#D1515A" dark>
-          <v-toolbar-title>Messages</v-toolbar-title>
+          <v-toolbar-title><h1>Messages</h1></v-toolbar-title>
 
           <v-spacer></v-spacer>
         </v-toolbar>
@@ -50,6 +50,7 @@
             color="#122441"
             absolute
             style="margin-top: -50px"
+            name="choosefile"
           >
             <v-icon dark> mdi-camera </v-icon>
           </v-btn>
@@ -59,6 +60,7 @@
             depressed
             color="#122441"
             class="white--text"
+            name="sendmessage"
             absolute
             style="margin-top: -40px; margin-left: 75%"
             >Send</v-btn
@@ -70,7 +72,7 @@
             v-if="likeErr == true"
             :absolute="absolute"
             :value="overlay"
-            ><v-btn color="error" @click="(overlay = false), (likeErr = false)">
+            ><v-btn color="error" name="closeOverlay" @click="(overlay = false), (likeErr = false)">
               Already liked
             </v-btn></v-overlay
           >
@@ -81,13 +83,14 @@
 
             <v-list-item v-else :key="message.message_title" ripple>
               <v-list-item-avatar>
-                <img :src="message.user_image" />
+                <img :src="message.user_image" alt="avatar" />
               </v-list-item-avatar>
 
               <v-list-item-content>
                 <div>
                   <v-list-item-title
                     style="color: #d1515a"
+                    class="font-weight-bold"
                     v-html="message.user_pseudo"
                   ></v-list-item-title>
                   <v-list-item-subtitle
@@ -106,6 +109,7 @@
                 <v-img
                   v-if="message.message_image != ''"
                   :src="message.message_image"
+                  alt="image post"
                   style="
                     
                     display: flex;
@@ -121,6 +125,7 @@
                   fab
                   dark
                   x-small
+                  name="updateMessage"
                   absolute
                   color="#122441"
                   @click="checkActive(message, index), (dialog = true)"
@@ -138,7 +143,7 @@
                     <v-list-item v-if="comment.message_id == message.message_id">
                       <template >
                         <v-list-item-avatar>
-                          <img :src="comment.user_image" />
+                          <img :src="comment.user_image" alt="avatar" />
                         </v-list-item-avatar>
 
                         <v-list-item-content>
@@ -149,7 +154,7 @@
                           <v-list-item-subtitle
                             v-text="comment.comment_content"
                           ></v-list-item-subtitle>
-                          <v-btn  v-if="checkadmin() == true" x-small absolute right bottom class="mb-10" fab @click="checkActiveCom(comment, i),deleteComment()"><v-icon color="#D1515A">mdi-close</v-icon></v-btn>
+                          <v-btn  v-if="checkadmin() == true" x-small name="deleteComment" absolute right bottom class="mb-10" fab @click="checkActiveCom(comment, i),deleteComment()"><v-icon color="#D1515A">mdi-close</v-icon></v-btn>
                         </v-list-item-content>
                       </template>
                     </v-list-item>
@@ -167,6 +172,7 @@
                     bottom
                     fab
                     dark
+                    name="commentOverlay"
                     x-small
                     absolute
                     color="#122441"
@@ -183,6 +189,7 @@
               <div class="mb-16" v-html="message.message_appreciation"></div>
               <v-btn
                 class="mb-16"
+                name="like"
                 :key="message.message_appreciation"
                 icon
                 color="#D1515A"
@@ -195,6 +202,7 @@
               <!-- gere le cas où l'utilisateur est un admin  -->
               <v-btn
                 class="mb-16"
+                name="deleteMessage"
                 v-if="checkadmin() == true"
                 :key="message.message_id"
                 @click="deleteMessage(message)"
@@ -259,10 +267,11 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="#D1515A" text @click="dialog = false">
+                  <v-btn color="#D1515A" name="closedialog" text @click="dialog = false">
                     Close
                   </v-btn>
                   <v-btn
+                    name="dialogupdatemessage"
                     color="#122441"
                     text
                     @click="updateMessage(), (dialog = false)"
@@ -285,13 +294,13 @@
                     >
                       <v-card>
                         <v-toolbar dark color="#D1515A">
-                          <v-btn icon dark @click="dialogcom = false">
+                          <v-btn name="closedialog" icon dark @click="dialogcom = false">
                             <v-icon>mdi-close</v-icon>
                           </v-btn>
                           <v-toolbar-title>Comments of Message N° {{selectedMessage}}</v-toolbar-title>
                           <v-spacer></v-spacer>
                           <v-toolbar-items>
-                            <v-btn dark text @click=" sendComment(), dialogcom = false"> Save </v-btn>
+                            <v-btn dark name="sendcomment" text @click=" sendComment(), dialogcom = false"> Save </v-btn>
                           </v-toolbar-items>
                         </v-toolbar>
                         <v-list three-line subheader>
