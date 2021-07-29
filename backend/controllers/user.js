@@ -41,7 +41,7 @@ exports.signup = (req, res, next) => {
                 user_pseudo: req.body.user_pseudo,//'','okok'
                 user_mail: req.body.user_mail,//'.com','mail@test.com'
                 user_password: hash,//'''test'
-                user_image: 'image_user.default.png',
+                user_image: 'http://localhost:3000/images/users-icon-defaut_2098__873_640_1627480267898.png',
                 user_isadmin: false
             });
             // Insert user in DB

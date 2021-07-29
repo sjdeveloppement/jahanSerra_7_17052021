@@ -9,7 +9,7 @@ const isadmin = require('../middleware/admin'); // import du middleware qui vér
 
 //CRUD
 // route all comment
-router.get('/comment/:message_id', auth, commentCTRL.getAllComment);
+router.get('/all', auth, commentCTRL.getAllComment);
 
 //post comment et enregistrement des commentaire dans la bdd 'create'
 router.post('/create/:message_id', auth, validatorComment, commentCTRL.createComment);

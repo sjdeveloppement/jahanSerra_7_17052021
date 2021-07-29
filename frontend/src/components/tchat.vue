@@ -79,8 +79,6 @@
               {{ message.header }}
             </v-subheader>
 
-            
-
             <v-list-item v-else :key="message.message_title" ripple>
               <v-list-item-avatar>
                 <img :src="message.user_image" />
@@ -104,72 +102,86 @@
                 <v-list-item-subtitle
                   v-html="message.message_content"
                 ></v-list-item-subtitle>
-                <div
+
+                <v-img
+                  v-if="message.message_image != ''"
+                  :src="message.message_image"
                   style="
-                    max-height: 400px;
+                    
                     display: flex;
                     justify-content: center;
                   "
-                >
-                  <v-img
-                    v-if="message.message_image != ''"
-                    :src="message.message_image"
-                    style="width: 100%"
-                  />
-                </div>
-
-                <br />
-                <!-- <div v-if="message.comments != ''" > 
-                <v-card 
-                  
-                  style="display: flex; justify-content: space-between"
-                  ><div style="box-shadow: 1px 1px 10px #d1515a">
-                    <v-list-item-avatar
-                      ><v-img :src="message.avatarcomment"
-                    /></v-list-item-avatar>
-                    <p v-html="message.pseudocomment"></p>
-                  </div>
-                  <div class="ml-2">
-                    <p v-html="message.comments"></p>
-                  </div>
-                </v-card></div>-->
-
-                <v-spacer></v-spacer>
+                />
                 <!-- update message btn -->
-                        <v-btn
-                          :key="index"
-                          class="mb-6"
-                          right
-                          bottom
-                          fab
-                          dark
-                          x-small
-                          absolute
-                          color="#122441"
-                          @click=" checkActive(message, index), dialog = true"
-
-
-                        >
-                          <v-icon dark> mdi-pencil </v-icon>
-                        </v-btn>
-               
-                <!-- système de commentaire à faire après le mvp--> 
-                <v-divider></v-divider>
-                <v-text-field
-                  v-model="comment_content"
-                  label="Comments"
-                  hide-details="auto"
+                <v-btn
+                  :key="index"
+                  class="mb-10"
+                  right
+                  bottom
+                  fab
+                  dark
+                  x-small
+                  absolute
                   color="#122441"
-                ></v-text-field>
-                <v-spacer></v-spacer>
-                <comments></comments>
+                  @click="checkActive(message, index), (dialog = true)"
+                >
+                  <v-icon dark> mdi-pencil </v-icon>
+                </v-btn>
+
+                <!-- système de commentaire à faire après le mvp-->
+
+                
+                <!-- ici commentaires -->
+                <v-list id="list-comments" two-line> </v-list>
+                <template >
+                  <div v-for="(comment, i) in allComments" :key="comment.message_title" >
+                    <v-list-item v-if="comment.message_id == message.message_id">
+                      <template >
+                        <v-list-item-avatar>
+                          <img :src="comment.user_image" />
+                        </v-list-item-avatar>
+
+                        <v-list-item-content>
+                          <v-list-item-title
+                            v-html="comment.user_pseudo"
+                          ></v-list-item-title>
+
+                          <v-list-item-subtitle
+                            v-text="comment.comment_content"
+                          ></v-list-item-subtitle>
+                        </v-list-item-content>
+                      </template>
+                    </v-list-item>
+
+                    <v-divider
+                      v-if="i < allComments.length -1 && comment.message_id == message.message_id"
+                      :key="i"
+                    ></v-divider>
+                    <!-- fin list commentaires -->
+                  </div>
+                  <v-btn
+                    :key="message.message_id"
+                    class="mb-10"
+                    left
+                    bottom
+                    fab
+                    dark
+                    x-small
+                    absolute
+                    color="#122441"
+                    @click=" checkActive(message, index), (dialogcom = true)"
+                  >
+                    <v-icon dark> mdi-format-list-bulleted-square </v-icon>
+                  </v-btn>
+                </template>
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
               </v-list-item-content>
-
+              
               <!-- compteur de like -->
-              <div v-html="message.message_appreciation"></div>
+              <div class="mb-16" v-html="message.message_appreciation"></div>
               <v-btn
+                class="mb-16"
                 :key="message.message_appreciation"
                 icon
                 color="#D1515A"
@@ -181,6 +193,7 @@
 
               <!-- gere le cas où l'utilisateur est un admin  -->
               <v-btn
+                class="mb-16"
                 v-if="checkadmin() == true"
                 :key="message.message_id"
                 @click="deleteMessage(message)"
@@ -191,81 +204,114 @@
             </v-list-item>
           </template>
         </v-list>
-         <!-- dialogs -->
-                <template v-if="dialog==true && this.selectedMessageUserID==userID" >
-                  
-                  <v-row justify="center">
-                    
-                    <v-dialog v-model="dialog"  max-width="600px">
-                      <template >
-                        
-                      </template>
-                      <v-card>
-                        <v-card-title>
-                          <span class="text-h5">Update my message</span>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  id="upmessage_title"
-                                  v-model="message_title"
-                                  label="Message Title*"
-                                  color="#122441"
-                                  required
-                                  @input="$v.message_title.$touch()"
-                                  @blur="$v.message_title.$touch()"
-                                  :error-messages="titleErrors"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="4"> </v-col>
 
-                              <v-col cols="12">
-                                <v-textarea
-                                  id="upmessage_content"
-                                  v-model="message_content"
-                                  label="Message content*"
-                                  color="#122441"
-                                  required
-                                  @input="$v.message_content.$touch()"
-                                  @blur="$v.message_content.$touch()"
-                                  :error-messages="contentErrors"
-                                ></v-textarea>
-                              </v-col>
-                              <v-col cols="12">
-                                <v-text-field
-                                  id="upmessage_image"
-                                  color="#122441"
-                                  label="Message image*"
-                                  type="file"
-                                  required
-                                  @change="fileUpload($event)"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                          <small>*indicates required field</small>
-                        </v-card-text>
-                        <v-card-actions>
+        <!-- dialogs update message -->
+        <template v-if="dialog == true && this.selectedMessageUserID == userID">
+          <v-row justify="center">
+            <v-dialog v-model="dialog" max-width="600px">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Update my message</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          id="upmessage_title"
+                          v-model="message_title"
+                          label="Message Title*"
+                          color="#122441"
+                          required
+                          @input="$v.message_title.$touch()"
+                          @blur="$v.message_title.$touch()"
+                          :error-messages="titleErrors"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4"> </v-col>
+
+                      <v-col cols="12">
+                        <v-textarea
+                          id="upmessage_content"
+                          v-model="message_content"
+                          label="Message content*"
+                          color="#122441"
+                          required
+                          @input="$v.message_content.$touch()"
+                          @blur="$v.message_content.$touch()"
+                          :error-messages="contentErrors"
+                        ></v-textarea>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field
+                          id="upmessage_image"
+                          color="#122441"
+                          label="Message image*"
+                          type="file"
+                          required
+                          @change="fileUpload($event)"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                  <small>*indicates required field</small>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="#D1515A" text @click="dialog = false">
+                    Close
+                  </v-btn>
+                  <v-btn
+                    color="#122441"
+                    text
+                    @click="updateMessage(), (dialog = false)"
+                  >
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+        </template>
+         <!-- dialogs comment -->
+                <template v-if="dialogcom == true">
+                  <v-row justify="center">
+                    <v-dialog
+                      v-model="dialogcom"
+                      fullscreen
+                      hide-overlay
+                      transition="dialog-bottom-transition"
+                    >
+                      <v-card>
+                        <v-toolbar dark color="#D1515A">
+                          <v-btn icon dark @click="dialogcom = false">
+                            <v-icon>mdi-close</v-icon>
+                          </v-btn>
+                          <v-toolbar-title>Comments of Message N° {{selectedMessage}}</v-toolbar-title>
                           <v-spacer></v-spacer>
-                          <v-btn color="#D1515A" text @click="dialog = false">
-                            Close
-                          </v-btn>
-                          <v-btn
-                            color="#122441"
-                            text
-                            @click="updateMessage(), (dialog = false) "
-                          >
-                            Save
-                          </v-btn>
-                        </v-card-actions>
+                          <v-toolbar-items>
+                            <v-btn dark text @click="dialogcom = false"> Save </v-btn>
+                          </v-toolbar-items>
+                        </v-toolbar>
+                        <v-list three-line subheader>
+                          <v-subheader>Leave a comment</v-subheader>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-textarea
+                              v-model="comment_content"
+                              label="Comments"
+                              hide-details="auto"
+                              color="#122441"
+                              ></v-textarea>
+                            </v-list-item-content>
+                          </v-list-item>
+                         
+                        </v-list>
                       </v-card>
                     </v-dialog>
                   </v-row>
                 </template>
-                
-                <!-- end of dialogs -->
+                <!--end of dialogs -->
       </v-card>
     </v-col>
   </v-row>
@@ -274,16 +320,13 @@
 import { validationMixin } from "vuelidate";
 import { required, helpers } from "vuelidate/lib/validators";
 import FormData from "form-data";
-import comments from "@/components/comments.vue"
+
 const axios = require("axios");
 const alpha = helpers.regex("alpha", /^[a-zéèùâûêîôàùç?!'"\d\-_\s]+$/i);
 export default {
   name: "tchat",
   props: ["tchatData"],
   mixins: [validationMixin],
-  components:{
-    comments
-  },
 
   validations: {
     message_title: { required, alpha },
@@ -292,14 +335,14 @@ export default {
   data() {
     return {
       modes: {
-        allComments: [],
-        comment_content: "",
+        
         emptyContent: false,
         user_isadmin: localStorage.getItem("isadmin"),
       },
-      userID : localStorage.getItem('userID'),
+      allComments: [{}],
+      userID: localStorage.getItem("userID"),
       selectedMessage: null,
-      selectedMessageUserID: '',
+      selectedMessageUserID: "",
       isActive: true,
       message_title: "",
       message_content: "",
@@ -309,7 +352,9 @@ export default {
       overlay: false,
 
       infos: "",
-      comments: [],
+      comments: [{}],
+      iClicked:'',
+      dialogcom: false,
       dialog: false,
       messages: [
         // ici ce sera l'affichage des objets de la requete comme message_title, message_content mais aussi user_image et comment_content
@@ -346,11 +391,16 @@ export default {
     chooseFiles() {
       document.getElementById("message_image").click();
     },
-    checkActive(message,index){
+    checkActive(message, index) {
       this.selectedMessage = message.message_id;
       this.selectedMessageUserID = message.user_id;
       this.indexClicked = index;
-      
+    },
+    checkActiveCom(allComments, i) {
+      this.selectedCommentary = allComments.comment_content;
+      //this.selectedMessageCom = allComments.message_id;
+      this.selectedCommentaryUserID = allComments.user_id;
+      this.iClicked = i;
     },
     disabledThump(message) {
       //message.message_id = document.getElementById('like-btn').value;
@@ -377,12 +427,11 @@ export default {
       // utilisation de formdata pour le json et les fichiers simultanément
 
       let message_image = document.querySelector("#message_image").files[0];
-      
+
       const form = new FormData();
       form.append("message_title", this.message_title);
       form.append("message_content", this.message_content);
       form.append("message_image", message_image);
-      
 
       axios.defaults.headers.common[
         "Authorization"
@@ -410,20 +459,22 @@ export default {
       updateform.append("message_title", this.message_title);
       updateform.append("message_content", this.message_content);
       updateform.append("upmessage_image", message_image);
-       axios.defaults.headers.common[
+      axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${localStorage.token}`;
       //indique si les demandes de contrôle d'accès intersites doivent être effectuées à l'aide des informations d'identification
       axios.default.withCredentials = true;
       axios
-        .put(URL + message_id, updateform, { "Content-Type": "multipart/form-data" })
+        .put(URL + message_id, updateform, {
+          "Content-Type": "multipart/form-data",
+        })
         .then(() => {
           message_image = "";
           this.refreshPost();
           document.location.reload();
         })
         .catch((error) => {
-          console.log(message_id)
+          console.log(message_id);
           console.log(error);
         });
     },
@@ -439,26 +490,28 @@ export default {
         .catch((error) => console.log(error));
     },
 
-    /*getComments(){
-      const message_id = this.tchatData.message_id;
-      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
-      axios.get("http://localhost:3000/api/comment/comment/"+ message_id)
-      .then((response)=>{
-        this.allComments = response.data.comments
-      })
-      
-      
-    },*/
-    
+    getComments() {
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${localStorage.token}`;
+      axios
+        .get("http://localhost:3000/api/comment/all")
+        .then((response) => {
+          this.allComments = response.data.result;
+          console.log(this.allComments);
+        })
+        .catch((error) => {
+          error;
+        });
+    },
+
     deleteMessage(message) {
-      
       const URL = `http://localhost:3000/api/message/${message.message_id}`;
 
       axios.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${localStorage.token}`;
       axios.delete(URL).then(() => {
-        
         this.refreshPost(message);
         document.location.reload();
       });
@@ -471,7 +524,6 @@ export default {
       axios
         .post(URL)
         .then(() => {
-          
           this.refreshPost(message);
           document.location.reload();
         })
@@ -509,7 +561,7 @@ export default {
   },
   mounted() {
     this.getMessages();
-    //this.getComments();
+    this.getComments();
   },
 };
 </script>
