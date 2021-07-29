@@ -149,6 +149,7 @@
                           <v-list-item-subtitle
                             v-text="comment.comment_content"
                           ></v-list-item-subtitle>
+                          <v-btn  v-if="checkadmin() == true" x-small absolute right bottom class="mb-10" fab @click="checkActiveCom(comment, i),deleteComment()"><v-icon color="#D1515A">mdi-close</v-icon></v-btn>
                         </v-list-item-content>
                       </template>
                     </v-list-item>
@@ -407,10 +408,11 @@ export default {
       this.indexClicked = index;
     },
     checkActiveCom(allComments, i) {
-      this.selectedCommentary = allComments.comment_content;
+      this.selectedCommentary = allComments.comment_id;
       //this.selectedMessageCom = allComments.message_id;
       this.selectedCommentaryUserID = allComments.user_id;
       this.iClicked = i;
+      console.log(this.selectedCommentary);
     },
     disabledThump(message) {
       //message.message_id = document.getElementById('like-btn').value;
@@ -540,15 +542,15 @@ export default {
         .catch((error) => {
           error, (this.overlay = true), (this.likeErr = true);
         });
-    } /*
-    deleteComment(comment_id){
+    }, 
+    deleteComment(){
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
-      axios.delete("http://localhost:3000/api/comment/"+ comment_id)
+      axios.delete("http://localhost:3000/api/comment/"+ this.selectedCommentary)
       .then(()=>{
         
         this.getComments();
       });
-    },*/,
+    },
     
     sendComment(){
 
