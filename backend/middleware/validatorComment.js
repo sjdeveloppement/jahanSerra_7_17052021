@@ -8,7 +8,7 @@ module.exports = (req, res, next)=>{
         })
     }
     // check si il y a des caractères non autorisée dans le titre
-    if(!validatorComment.matches(req.body.comment_content, /^[a-zéèùâûêîôàù'\d\-_\s]+$/i)){
+    if(!validatorComment.matches(req.body.comment_content, /^[a-zéèùâûêîôàç!?ù'\d\-_\s]+$/i)){
         
         return res.status(400).json({
             error: "Le Commentaire ne doit pas contenir des caractères spéciaux !"

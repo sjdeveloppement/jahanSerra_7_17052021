@@ -11,7 +11,7 @@ export default{
         tchat
     },
     mounted: function () {
-    console.log(this.$store.state.user);
+    
     // si l'utilisateur n'est pas connecté go page de connexion sinon j'affiche les infos
     if (this.$store.state.user.userID == -1) {
       this.$router.push("/sign-in");

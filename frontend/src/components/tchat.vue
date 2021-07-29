@@ -239,7 +239,7 @@
                           required
                           @input="$v.message_content.$touch()"
                           @blur="$v.message_content.$touch()"
-                          :error-messages="contentErrors"
+                          :error-messages="contentCommentErrors"
                         ></v-textarea>
                       </v-col>
                       <v-col cols="12">
@@ -290,7 +290,7 @@
                           <v-toolbar-title>Comments of Message N° {{selectedMessage}}</v-toolbar-title>
                           <v-spacer></v-spacer>
                           <v-toolbar-items>
-                            <v-btn dark text @click="dialogcom = false"> Save </v-btn>
+                            <v-btn dark text @click=" sendComment(), dialogcom = false"> Save </v-btn>
                           </v-toolbar-items>
                         </v-toolbar>
                         <v-list three-line subheader>
@@ -302,6 +302,9 @@
                               label="Comments"
                               hide-details="auto"
                               color="#122441"
+                              @input="$v.comment_content.$touch()"
+                              @blur="$v.comment_content.$touch()"
+                              :error-messages="contentCommentErrors"
                               ></v-textarea>
                             </v-list-item-content>
                           </v-list-item>
@@ -331,6 +334,7 @@ export default {
   validations: {
     message_title: { required, alpha },
     message_content: { required, alpha },
+    comment_content:{ required, alpha},
   },
   data() {
     return {
@@ -383,6 +387,12 @@ export default {
       const errors = [];
       if (!this.$v.message_content.$dirty) return errors;
       !this.$v.message_content.alpha && errors.push("text only");
+      return errors;
+    },
+    contentCommentErrors() {
+      const errors = [];
+      if (!this.$v.comment_content.$dirty) return errors;
+      !this.$v.comment_content.alpha && errors.push("Comment must be a text");
       return errors;
     },
   },
@@ -498,7 +508,7 @@ export default {
         .get("http://localhost:3000/api/comment/all")
         .then((response) => {
           this.allComments = response.data.result;
-          console.log(this.allComments);
+          //console.log(this.allComments);
         })
         .catch((error) => {
           error;
@@ -539,17 +549,12 @@ export default {
         this.getComments();
       });
     },*/,
-    /*
+    
     sendComment(){
-      if(!this.comment_content){
-        this.emptyContent = true;
-        return console.log("commentary can't be empty");
-      }
-      const message_id = this.tchatData.message_id;
+
+      const message_id = this.selectedMessage;
       const commentData = {
-        message_id: this.tchatData.message_id,
-        message_content: this.message_content,
-        user_id: localStorage.getItem('userID'),
+        comment_content: this.comment_content,
       };
       axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
       axios.post("http://localhost:3000/api/comment/create/"+ message_id, commentData)
@@ -557,7 +562,7 @@ export default {
         this.comment_content ='';
         this.getComments();
       });
-    },*/
+    },
   },
   mounted() {
     this.getMessages();
