@@ -146,13 +146,13 @@
                     v-for="(comment, i) in allComments"
                     :key="comment.message_title"
                   >
-                    <v-list-item
+                    <v-list-item 
                       v-if="comment.message_id == message.message_id"
                     >
-                      <template >
+                      <template  >
                         <v-list>
                           <v-list-item-avatar size="40" height="40" width="40">
-                            <img :src="comment.user_image" alt="avatar"   />
+                            <img role="listitem" :src="comment.user_image" alt="avatar"   />
                           </v-list-item-avatar>
 
                           <v-list-item-content>

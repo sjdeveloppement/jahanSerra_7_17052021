@@ -20,7 +20,7 @@
           <v-btn
             class="ml-2 white--text"
             name="send"
-            color="#EF5D60"
+            color="#000033"
             @click="sendImg()"
             >Send Avatar</v-btn
           >
@@ -41,7 +41,7 @@
     <div style="display: flex; justify-content: center">
       <v-btn
         class="button ma-2 white--text"
-        color="#EF5D60"
+        color="#000033"
         id="deleteProfil"
         name="deleteprofil"
         type="sumbit"

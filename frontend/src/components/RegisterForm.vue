@@ -28,7 +28,7 @@
       <v-btn
         @click="register()"
         class="mr-4 white--text"
-        style="background-color: #d1515a"
+        style="background-color: #EF5D60"
         v-show="!showValidationbtn"
         :class="{ 'button--disabled': !validatedFileds }"
       >

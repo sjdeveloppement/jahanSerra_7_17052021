@@ -22,7 +22,7 @@
           <v-alert v-if="status == 'error_login'" type="error">
             Identifiant et/ou mot de passe invalide 1 majuscule, 1 minuscule, 1 caractères spécial et 8 caractères minimum!
           </v-alert>
-          <v-btn color="#D1515A" class="mr-4 white--text" @click="login()"
+          <v-btn color="#000033" class="mr-4 white--text" @click="login()"
             ><span v-if="status == 'loading'">Connexion en cours</span>
             <span v-else>Connexion</span>
           </v-btn>
