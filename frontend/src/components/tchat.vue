@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-col cols="12" sm="8" md="6">
       <v-card>
-        <v-toolbar color="#D1515A" dark>
+        <v-toolbar color="#EF5D60" dark>
           <v-toolbar-title><h1>Messages</h1></v-toolbar-title>
 
           <v-spacer></v-spacer>
@@ -16,7 +16,7 @@
             id="message_title"
             label="title"
             background-color="grey lighten-2"
-            color="#122441"
+            color="#000033"
             @input="$v.message_title.$touch()"
             @blur="$v.message_title.$touch()"
             :error-messages="titleErrors"
@@ -25,7 +25,7 @@
           <v-textarea
             v-model="message_content"
             background-color="grey lighten-2"
-            color="#122441"
+            color="#000033"
             label="Message"
             @input="$v.message_content.$touch()"
             @blur="$v.message_content.$touch()"
@@ -47,10 +47,11 @@
             class="mx-16"
             fab
             dark
-            color="#122441"
+            color="#000033"
             absolute
             style="margin-top: -50px"
             name="choosefile"
+            aria-label="choosefile"
           >
             <v-icon dark> mdi-camera </v-icon>
           </v-btn>
@@ -58,9 +59,10 @@
             @click="sendMessage()"
             type="submit"
             depressed
-            color="#122441"
+            color="#000033"
             class="white--text"
             name="sendmessage"
+            aria-label="sendmessage"
             absolute
             style="margin-top: -40px; margin-left: 75%"
             >Send</v-btn
@@ -72,7 +74,12 @@
             v-if="likeErr == true"
             :absolute="absolute"
             :value="overlay"
-            ><v-btn color="error" name="closeOverlay" @click="(overlay = false), (likeErr = false)">
+            ><v-btn
+              color="error"
+              name="closeOverlay"
+              aria-label="closeOverlay"
+              @click="(overlay = false), (likeErr = false)"
+            >
               Already liked
             </v-btn></v-overlay
           >
@@ -82,14 +89,14 @@
             </v-subheader>
 
             <v-list-item v-else :key="message.message_title" ripple>
-              <v-list-item-avatar>
-                <img :src="message.user_image" alt="avatar" />
+              <v-list-item-avatar height="40" width="40">
+                <img :src="message.user_image" alt="avatar"  />
               </v-list-item-avatar>
 
               <v-list-item-content>
                 <div>
                   <v-list-item-title
-                    style="color: #d1515a"
+                    style="color: #000033"
                     class="font-weight-bold"
                     v-html="message.user_pseudo"
                   ></v-list-item-title>
@@ -110,11 +117,7 @@
                   v-if="message.message_image != ''"
                   :src="message.message_image"
                   alt="image post"
-                  style="
-                    
-                    display: flex;
-                    justify-content: center;
-                  "
+                  style="display: flex; justify-content: center"
                 />
                 <!-- update message btn -->
                 <v-btn
@@ -126,8 +129,9 @@
                   dark
                   x-small
                   name="updateMessage"
+                  aria-label="updateMessage"
                   absolute
-                  color="#122441"
+                  color="#000033"
                   @click="checkActive(message, index), (dialog = true)"
                 >
                   <v-icon dark> mdi-pencil </v-icon>
@@ -135,32 +139,55 @@
 
                 <!-- système de commentaire à faire après le mvp-->
 
-                
                 <!-- ici commentaires -->
                 <v-list id="list-comments" two-line> </v-list>
-                <template >
-                  <div v-for="(comment, i) in allComments" :key="comment.message_title" >
-                    <v-list-item v-if="comment.message_id == message.message_id">
+                <template>
+                  <div role="list"
+                    v-for="(comment, i) in allComments"
+                    :key="comment.message_title"
+                  >
+                    <v-list-item
+                      v-if="comment.message_id == message.message_id"
+                    >
                       <template >
-                        <v-list-item-avatar>
-                          <img :src="comment.user_image" alt="avatar" />
-                        </v-list-item-avatar>
+                        <v-list>
+                          <v-list-item-avatar size="40" height="40" width="40">
+                            <img :src="comment.user_image" alt="avatar"   />
+                          </v-list-item-avatar>
 
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-html="comment.user_pseudo"
-                          ></v-list-item-title>
+                          <v-list-item-content>
+                            <v-list-item-title
+                              v-html="comment.user_pseudo"
+                            ></v-list-item-title>
 
-                          <v-list-item-subtitle
-                            v-text="comment.comment_content"
-                          ></v-list-item-subtitle>
-                          <v-btn  v-if="checkadmin() == true" x-small name="deleteComment" absolute right bottom class="mb-10" fab @click="checkActiveCom(comment, i),deleteComment()"><v-icon color="#D1515A">mdi-close</v-icon></v-btn>
-                        </v-list-item-content>
+                            <v-list-item-subtitle
+                              v-text="comment.comment_content"
+                            ></v-list-item-subtitle>
+                            <v-btn
+                              v-if="checkadmin() == true"
+                              x-small
+                              name="deleteComment"
+                              aria-label="deleteComment"
+                              absolute
+                              right
+                              bottom
+                              class="mb-10"
+                              fab
+                              @click="
+                                checkActiveCom(comment, i), deleteComment()
+                              "
+                              ><v-icon color="#EF5D60">mdi-close</v-icon></v-btn
+                            >
+                          </v-list-item-content>
+                        </v-list>
                       </template>
                     </v-list-item>
 
                     <v-divider
-                      v-if="i < allComments.length -1 && comment.message_id == message.message_id"
+                      v-if="
+                        i < allComments.length - 1 &&
+                        comment.message_id == message.message_id
+                      "
                       :key="i"
                     ></v-divider>
                     <!-- fin list commentaires -->
@@ -173,10 +200,11 @@
                     fab
                     dark
                     name="commentOverlay"
+                    aria-label="commentOverlay"
                     x-small
                     absolute
-                    color="#122441"
-                    @click=" checkActive(message, index), (dialogcom = true)"
+                    color="#000033"
+                    @click="checkActive(message, index), (dialogcom = true)"
                   >
                     <v-icon dark> mdi-format-list-bulleted-square </v-icon>
                   </v-btn>
@@ -184,15 +212,16 @@
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
               </v-list-item-content>
-              
+
               <!-- compteur de like -->
               <div class="mb-16" v-html="message.message_appreciation"></div>
               <v-btn
                 class="mb-16"
                 name="like"
+                aria-label="like"
                 :key="message.message_appreciation"
                 icon
-                color="#D1515A"
+                color="#000033"
                 @click="likeMessage(message), disabledThump(message)"
                 ><v-icon id="like-btn" :disabled="!isActive"
                   >mdi-thumb-up</v-icon
@@ -203,11 +232,12 @@
               <v-btn
                 class="mb-16"
                 name="deleteMessage"
+                aria-label="deleteMessage"
                 v-if="checkadmin() == true"
                 :key="message.message_id"
                 @click="deleteMessage(message)"
                 icon
-                color="#D1515A"
+                color="#EF5D60"
                 ><v-icon>mdi-cancel</v-icon></v-btn
               >
             </v-list-item>
@@ -230,7 +260,7 @@
                           id="upmessage_title"
                           v-model="message_title"
                           label="Message Title*"
-                          color="#122441"
+                          color="#000033"
                           required
                           @input="$v.message_title.$touch()"
                           @blur="$v.message_title.$touch()"
@@ -244,7 +274,7 @@
                           id="upmessage_content"
                           v-model="message_content"
                           label="Message content*"
-                          color="#122441"
+                          color="#000033"
                           required
                           @input="$v.message_content.$touch()"
                           @blur="$v.message_content.$touch()"
@@ -254,7 +284,7 @@
                       <v-col cols="12">
                         <v-text-field
                           id="upmessage_image"
-                          color="#122441"
+                          color="#000033"
                           label="Message image*"
                           type="file"
                           required
@@ -267,12 +297,19 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="#D1515A" name="closedialog" text @click="dialog = false">
+                  <v-btn
+                    color="#EF5D60"
+                    name="closedialog"
+                    aria-label="closedialog"
+                    text
+                    @click="dialog = false"
+                  >
                     Close
                   </v-btn>
                   <v-btn
                     name="dialogupdatemessage"
-                    color="#122441"
+                    aria-label="dialogupdatemessage"
+                    color="#000033"
                     text
                     @click="updateMessage(), (dialog = false)"
                   >
@@ -283,48 +320,64 @@
             </v-dialog>
           </v-row>
         </template>
-         <!-- dialogs comment -->
-                <template v-if="dialogcom == true">
-                  <v-row justify="center">
-                    <v-dialog
-                      v-model="dialogcom"
-                      fullscreen
-                      hide-overlay
-                      transition="dialog-bottom-transition"
+        <!-- dialogs comment -->
+        <template v-if="dialogcom == true">
+          <v-row justify="center">
+            <v-dialog
+              v-model="dialogcom"
+              fullscreen
+              hide-overlay
+              transition="dialog-bottom-transition"
+            >
+              <v-card>
+                <v-toolbar dark color="#EF5D60">
+                  <v-btn
+                    name="closedialog"
+                    aria-label="closedialog"
+                    icon
+                    dark
+                    @click="dialogcom = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                  <v-toolbar-title
+                    >Comments of Message N°
+                    {{ selectedMessage }}</v-toolbar-title
+                  >
+                  <v-spacer></v-spacer>
+                  <v-toolbar-items>
+                    <v-btn
+                      dark
+                      name="sendcomment"
+                      aria-label="sendcomment"
+                      text
+                      @click="sendComment(), (dialogcom = false)"
                     >
-                      <v-card>
-                        <v-toolbar dark color="#D1515A">
-                          <v-btn name="closedialog" icon dark @click="dialogcom = false">
-                            <v-icon>mdi-close</v-icon>
-                          </v-btn>
-                          <v-toolbar-title>Comments of Message N° {{selectedMessage}}</v-toolbar-title>
-                          <v-spacer></v-spacer>
-                          <v-toolbar-items>
-                            <v-btn dark name="sendcomment" text @click=" sendComment(), dialogcom = false"> Save </v-btn>
-                          </v-toolbar-items>
-                        </v-toolbar>
-                        <v-list three-line subheader>
-                          <v-subheader>Leave a comment</v-subheader>
-                          <v-list-item>
-                            <v-list-item-content>
-                              <v-textarea
-                              v-model="comment_content"
-                              label="Comments"
-                              hide-details="auto"
-                              color="#122441"
-                              @input="$v.comment_content.$touch()"
-                              @blur="$v.comment_content.$touch()"
-                              :error-messages="contentCommentErrors"
-                              ></v-textarea>
-                            </v-list-item-content>
-                          </v-list-item>
-                         
-                        </v-list>
-                      </v-card>
-                    </v-dialog>
-                  </v-row>
-                </template>
-                <!--end of dialogs -->
+                      Save
+                    </v-btn>
+                  </v-toolbar-items>
+                </v-toolbar>
+                <v-list three-line subheader>
+                  <v-subheader>Leave a comment</v-subheader>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-textarea
+                        v-model="comment_content"
+                        label="Comments"
+                        hide-details="auto"
+                        color="#000033"
+                        @input="$v.comment_content.$touch()"
+                        @blur="$v.comment_content.$touch()"
+                        :error-messages="contentCommentErrors"
+                      ></v-textarea>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-card>
+            </v-dialog>
+          </v-row>
+        </template>
+        <!--end of dialogs -->
       </v-card>
     </v-col>
   </v-row>
@@ -344,12 +397,11 @@ export default {
   validations: {
     message_title: { required, alpha },
     message_content: { required, alpha },
-    comment_content:{ required, alpha},
+    comment_content: { required, alpha },
   },
   data() {
     return {
       modes: {
-        
         emptyContent: false,
         user_isadmin: localStorage.getItem("isadmin"),
       },
@@ -367,7 +419,7 @@ export default {
 
       infos: "",
       comments: [{}],
-      iClicked:'',
+      iClicked: "",
       dialogcom: false,
       dialog: false,
       messages: [
@@ -421,7 +473,6 @@ export default {
       //this.selectedMessageCom = allComments.message_id;
       this.selectedCommentaryUserID = allComments.user_id;
       this.iClicked = i;
-      console.log(this.selectedCommentary);
     },
     disabledThump(message) {
       //message.message_id = document.getElementById('like-btn').value;
@@ -495,7 +546,6 @@ export default {
           document.location.reload();
         })
         .catch((error) => {
-          console.log(message_id);
           console.log(error);
         });
     },
@@ -519,7 +569,6 @@ export default {
         .get("http://localhost:3000/api/comment/all")
         .then((response) => {
           this.allComments = response.data.result;
-          //console.log(this.allComments);
         })
         .catch((error) => {
           error;
@@ -551,28 +600,35 @@ export default {
         .catch((error) => {
           error, (this.overlay = true), (this.likeErr = true);
         });
-    }, 
-    deleteComment(){
-      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
-      axios.delete("http://localhost:3000/api/comment/"+ this.selectedCommentary)
-      .then(()=>{
-        
-        this.getComments();
-      });
     },
-    
-    sendComment(){
+    deleteComment() {
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${localStorage.token}`;
+      axios
+        .delete("http://localhost:3000/api/comment/" + this.selectedCommentary)
+        .then(() => {
+          this.getComments();
+        });
+    },
 
+    sendComment() {
       const message_id = this.selectedMessage;
       const commentData = {
         comment_content: this.comment_content,
       };
-      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
-      axios.post("http://localhost:3000/api/comment/create/"+ message_id, commentData)
-      .then(()=>{
-        this.comment_content ='';
-        this.getComments();
-      });
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${localStorage.token}`;
+      axios
+        .post(
+          "http://localhost:3000/api/comment/create/" + message_id,
+          commentData
+        )
+        .then(() => {
+          this.comment_content = "";
+          this.getComments();
+        });
     },
   },
   mounted() {

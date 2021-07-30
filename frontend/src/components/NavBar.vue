@@ -2,12 +2,12 @@
    <nav>
     <v-app-bar
         app
-        color="#122441"
+        color="#000033"
         
     >
       <v-toolbar-title
           class="display-1 Bold text" 
-          style="cursor:pointer; color: #D1515A">Groupomania
+          style="cursor:pointer; color: #EF5D60">Groupomania
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
@@ -15,13 +15,13 @@
         :to="sign"
         text
     >
-    <span class="mr-2" style ="color: #D1515A"><strong>Sign in</strong></span>
+    <span class="mr-2" style ="color: #EF5D60"><strong>Sign in</strong></span>
     </v-btn>
     <v-btn 
         :to="register"
         text
     >
-    <span class="mr-2" style ="color: #D1515A"><strong>Register</strong></span>
+    <span class="mr-2" style ="color: #EF5D60"><strong>Register</strong></span>
     </v-btn>
     <v-btn
         
@@ -29,13 +29,13 @@
         text
         
     >
-    <span class="mr-2" style ="color: #D1515A"><strong>Account</strong></span>
+    <span class="mr-2" style ="color: #EF5D60"><strong>Account</strong></span>
     </v-btn>
     <v-btn 
         :to="tchat"
         text
     >
-    <span class="mr-2" style ="color: #D1515A"><strong>Tchat</strong></span>
+    <span class="mr-2" style ="color: #EF5D60"><strong>Tchat</strong></span>
     </v-btn>
     </v-app-bar>
   </nav>
