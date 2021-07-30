@@ -169,9 +169,11 @@
                               name="deleteComment"
                               aria-label="deleteComment"
                               absolute
-                              right
-                              bottom
-                              class="mb-10"
+                              :top="$vuetify.breakpoint.smAndDown "
+                              :left="$vuetify.breakpoint.smAndDown"
+                              :bottom="$vuetify.breakpoint.mdAndUp"
+                              :right="$vuetify.breakpoint.mdAndUp"
+                              class="mb-10 "
                               fab
                               @click="
                                 checkActiveCom(comment, i), deleteComment()
@@ -457,6 +459,7 @@ export default {
       !this.$v.comment_content.alpha && errors.push("Comment must be a text");
       return errors;
     },
+    
   },
 
   methods: {
