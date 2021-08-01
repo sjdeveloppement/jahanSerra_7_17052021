@@ -105,11 +105,11 @@
                   ></v-list-item-subtitle>
                 </div>
 
-                <v-list-item-title
+                <v-list-item-title 
                   v-html="message.message_title"
                 ></v-list-item-title>
 
-                <v-list-item-subtitle
+                <v-list-item-subtitle style="overflow: auto"
                   v-html="message.message_content"
                 ></v-list-item-subtitle>
 
@@ -155,13 +155,14 @@
                             <img role="listitem" :src="comment.user_image" alt="avatar"   />
                           </v-list-item-avatar>
 
-                          <v-list-item-content>
+                          <v-list-item-content >
                             <v-list-item-title
                               v-html="comment.user_pseudo"
                             ></v-list-item-title>
 
                             <v-list-item-subtitle
                               v-text="comment.comment_content"
+                              style="overflow: auto"
                             ></v-list-item-subtitle>
                             <v-btn
                               v-if="checkadmin() == true"
@@ -180,11 +181,16 @@
                               "
                               ><v-icon color="#EF5D60">mdi-close</v-icon></v-btn
                             >
+                            
                           </v-list-item-content>
+                          
                         </v-list>
                       </template>
                     </v-list-item>
-
+                    
+                    
+                    
+                    
                     <v-divider
                       v-if="
                         i < allComments.length - 1 &&
@@ -192,6 +198,8 @@
                       "
                       :key="i"
                     ></v-divider>
+                    <v-spacer v-if="$vuetify.breakpoint.smAndDown"><br></v-spacer>
+                    
                     <!-- fin list commentaires -->
                   </div>
                   <v-btn

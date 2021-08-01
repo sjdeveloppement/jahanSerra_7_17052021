@@ -197,30 +197,12 @@ exports.likeAppreciation = (req, res) => {
     })
 };
 
-//  fonctionnalités en Option pour le MVP
-
-/*
-// fonction pour obtenir un message via l'id de l'utilisateur Read one
-exports.getOneMessage = (res, req, next) => {
-    sql.query("SELECT message_title, user_id, message_content, message_appreciation FROM message WHERE user_id = 1", function (error, result){
-        if (error) throw error;
-        //console.log(result);
-
-    })
-    Message.findOne({ _id : req.params.id })
-    .then(message => res.status(200).json(message))
-    .catch(error => res.status(404).json(error));
-
-};*/
-
 // update message
 exports.modifyMessage = (req, res, next) => {
-    
-
     let user_id= res.locals.userID;
     let message_id = req.params.message_id;
     let message_image = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`
-    
+   
     sql.query("UPDATE message SET message_title = ? , message_content = ? , message_image = ? WHERE message_id = ? AND user_id = ? ",
     [req.body.message_title, req.body.message_content, message_image, message_id, user_id  ], function(error, results){
         if (error){

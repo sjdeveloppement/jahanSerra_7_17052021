@@ -2,7 +2,7 @@
   <nav >
     <v-app-bar app color="#000033" >
       <v-app-bar-nav-icon
-        @click.stop="drawer = !drawer"
+        @click.stop="drawer = !drawer" 
         color="#EF5D60"
         aria-label="navbtn"
         name="navbtn"
@@ -15,7 +15,7 @@
 
       <v-spacer></v-spacer>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" absolute left  temporary
+    <v-navigation-drawer v-model="drawer" absolute left  temporary 
       ><v-list nav dense 
         ><v-list-item-group v-model="group" 
           ><v-list-item>

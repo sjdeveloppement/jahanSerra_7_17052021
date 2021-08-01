@@ -86,6 +86,7 @@ export default {
   methods: {
     logout: function () {
       this.$store.commit("logout");
+      localStorage.clear();
       this.$router.push("/sign-in");
     },
     sendImg() {

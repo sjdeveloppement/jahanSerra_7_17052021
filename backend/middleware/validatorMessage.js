@@ -8,7 +8,7 @@ module.exports = (req, res, next)=>{
         })
     }
     // check si il y a des caractères non autorisée dans le titre
-    if(!validatorMessage.matches(req.body.message_title, /^[a-zéèùâûêîôàùç?!'"\d\-_\s]+$/i)){
+    if(!validatorMessage.matches(req.body.message_title, /^[a-zéèùâûêîôàùç,?!'"\d\-_\s]+$/i)){
         
         return res.status(400).json({
             error: "Le titre du message ne doit pas contenir des caractères spéciaux"
@@ -22,7 +22,7 @@ module.exports = (req, res, next)=>{
         })
     }
     //check si le contenu contient des caractères spéciaux
-    if(!validatorMessage.matches(req.body.message_content, /^[a-zéèùâûêîôàùç?!'"\d\-_\s]+$/i)){
+    if(!validatorMessage.matches(req.body.message_content, /^[a-zéèùâûêîôàù,ç?!'"\d\-_\s]+$/i)){
         
         return res.status(400).json({
             error: "Le contenu du message ne doit pas contenir  des caractères spéciaux"
