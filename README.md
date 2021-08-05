@@ -46,6 +46,8 @@ Afin de rester sur une sécurisation des données veuillez me contacter pour rem
 ----------------------------------------------------------------------------------------------------------------------------
 
 ## BACKEND 
+Il se peut que vous ayez a installer express sur votre machine avec la commande:  npm install --save express .
+
 Afin de lancer le backend avec nodemon 
 procédez comme ceci nodemon server.js
 
