@@ -1,18 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-const fs = require('fs');
 const sql = require('../models/db');
-//const Users = require('../models/users');
 const User = require('../models/user');
-const userSchema = require('../models/user');
-
-//const { Model } = require('sequelize/types');
 
 // Création d'un schema de validation du mot de passe afin de sécuriser les comptes avec un mdp fort
 const passwordValidator = require('password-validator');
-const { response } = require('../app');
-const multer = require('multer');
+
 const schema = new passwordValidator();
 schema
     .is().min(8) // min 8 caractères
@@ -21,7 +14,6 @@ schema
     .has().lowercase(1) // min 1 caractère minuscule
     .has().symbols(1) // min 1 symbole
     .has().not().spaces(); // ne doit pas contenir d'espace
-
 
 //  signup : on regarde si le schema du mdp est respecté si ok -> cryptage du password, créer l'utilisateur avec le mdp crypté le pseudo et le mail, puis l'enregistre dans la bdd
 exports.signup = (req, res, next) => {
@@ -47,25 +39,19 @@ exports.signup = (req, res, next) => {
             // Insert user in DB
             sql.query('INSERT INTO users SET ?', newUser, function (error, results, fields) {
                 if (error) {
-                    console.log(newUser);
                     return res.status(500).json({ error });
-
                 }
-
                 // DB ok
                 const id = results.insertId;
                 newUser.id = id;
-                
-                console.log('utilisateur crée:', newUser);
-                return res.status(200).json({
+                return res.status(201).json({
                     message: 'utilisateur créé',
                     user: newUser
                 });
 
             });
         })
-
-}
+};
 
 // fonction login : recupère l'utilisateur dans la base on regarde si il existe et on compare les identitifiants,  on regarde le hash dans la bdd si c'est bon on lui renvoi un token
 exports.login = (req, res, next) => {
@@ -75,17 +61,17 @@ exports.login = (req, res, next) => {
     const sqlFindUser = "SELECT user_id, user_password, user_isadmin FROM users WHERE user_mail = ?";
     //recherche de l'utilisateur dans la bdd
     sql.query(sqlFindUser, [email], function (err, result) {
-        
-        
+
+
 
         if (result.length == 0) {
             return res.status(401).json({ error: "Utilisateur non trouvé !" });
         }
         //si l'utilisateur existe, vérification du mot de passe
-        
+
         else {
             bcrypt.compare(password, result[0].user_password)
-               
+
                 .then(valid => {
                     //si le mot de passe est incorrect
                     if (!valid) {
@@ -99,19 +85,13 @@ exports.login = (req, res, next) => {
                         ),
                         userID: result[0].user_id,
                         user_isadmin: result[0].user_isadmin,
-                        
-
                     });
-
-                    
                 })
                 .catch(e => res.status(500).json(e));
         }
 
     });
 };
-
-
 
 //get users read all
 exports.findAll = (req, res, next) => {
@@ -124,8 +104,8 @@ exports.findAll = (req, res, next) => {
             }, 1000);
         })
 
-            .then(res.status(200).json(result))
-            .catch(error => { res.status(400).json({ error }) })
+            .then(res.status(201).json(result))
+            .catch(error => { res.status(404).json({ error }) })
     })
 };
 
@@ -156,78 +136,70 @@ exports.update = (req, res, next) => {
         });
         return false;
     }
-    //const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
+    
 
     // si je veux rajouter la modification de l'image en backend je dois : add dans la requete sql user_image=? puis dans le tableau add [ imgUser]
     const modifyCryptedPass = req.body.user_password;
-        bcrypt.hash(modifyCryptedPass, 10)
-            .then(hash => {
-              
-                sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?   WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash,  req.params.user_id], function (error, results) {
-                    if (error) {
-                        console.log(req.body);
-                        return res.status(500).json({ error });
-                    } else if (results.length === 0) {
-                        return res.status(401).json({ message: 'utilisateur inexistant' });
-                    } else {
-                        //console.log(imgUser)
-                        return res.status(200).json({ message: 'utilisateur modifié' });
+    bcrypt.hash(modifyCryptedPass, 10)
+        .then(hash => {
 
-                    }
-                });
+            sql.query('UPDATE users SET user_pseudo=?, user_mail=?, user_password=?   WHERE user_id=?', [req.body.user_pseudo, req.body.user_mail, hash, req.params.user_id], function (error, results) {
+                if (error) {
+                    return res.status(500).json({ error });
+                } else if (results.length === 0) {
+                    return res.status(404).json({ message: 'utilisateur inexistant' });
+                } else {
+                    return res.status(201).json({ message: 'utilisateur modifié' });
 
-            })
-    
+                }
+            });
+
+        })
+
 };
 
 //udpate user image
 exports.updateImg = (req, res, next) => {
-    
-    const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}` ;
 
-    // si je veux rajouter la modification de l'image en backend je dois : add dans la requete sql user_image=? puis dans le tableau add [ imgUser]      
-                sql.query('UPDATE users SET user_image=? WHERE user_id=?', [ imgUser, req.params.user_id], function (error, results) {
-                    if (error) {
-                        console.log(req.body);
-                        return res.status(500).json({ error });
-                    } else if (results.length === 0) {
-                        return res.status(401).json({ message: 'utilisateur inexistant' });
-                    } else {
-                        //console.log(imgUser)
-                        return res.status(200).json({ message: 'Avatar utilisateur modifié' });
+    const imgUser = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`;
 
-                    }
-                });
-    
+    sql.query('UPDATE users SET user_image=? WHERE user_id=?', [imgUser, req.params.user_id], function (error, results) {
+        if (error) {
+            console.log(req.body);
+            return res.status(500).json({ error });
+        } else if (results.length === 0) {
+            return res.status(404).json({ message: 'utilisateur inexistant' });
+        } else {
+            //console.log(imgUser)
+            return res.status(201).json({ message: 'Avatar utilisateur modifié' });
+        }
+    });
+
 };
-
 
 //Delete user on séléctionne l'id qui correspond dans la bdd à l'id séléctionner dans les paramètre de la req http et on verifie sa présence si ok suppression
 exports.delete = (req, res, next) => {
     const user_id = req.params.user_id;
     const userId = res.locals.userID;
-    sql.query("SELECT user_isadmin FROM users WHERE user_id= ? ", userId, function(err, result){
-        if (err){
+    sql.query("SELECT user_isadmin FROM users WHERE user_id= ? ", userId, function (err, result) {
+        if (err) {
             res.status(500).json(err.message);
-            console.log(userId);
-            //console.log(result); 
         }
-        if (result[0].user_isadmin === 1 || user_id == userId){
+        if (result[0].user_isadmin === 1 || user_id == userId) {
             sql.query('DELETE FROM users WHERE user_id= ? ', user_id, function (error, results) {
                 if (error) {
-                    
+
                     return res.status(500).json({ error });
                 } else if (results.length === 0) {
-                    return res.status(401).json({ message: 'utilisateur introuvable' });
+                    return res.status(404).json({ message: 'utilisateur introuvable' });
                 } else {
-                    return res.status(200).json({ message: 'profil supprimé' });
+                    return res.status(201).json({ message: 'profil supprimé' });
                 }
             });
-        }else{
-            return res.status(403).json({ message: "Vous ne pouvez pas supprimer le profil d'un autre utilisateur"});
+        } else {
+            return res.status(401).json({ message: "Vous ne pouvez pas supprimer le profil d'un autre utilisateur" });
         }
-        }
+    }
     )
-    
-};
 
+};

@@ -18,7 +18,7 @@
     <v-navigation-drawer v-model="drawer" absolute left  temporary 
       ><v-list nav dense 
         ><v-list-item-group v-model="group" 
-          ><v-list-item>
+          ><v-list-item v-if="$store.state.user.userID==-1">
             <v-btn :to="sign" text>
               <span class="mr-2" style="color: #000033"
                 ><strong>Sign in</strong></span
@@ -26,7 +26,7 @@
             </v-btn>
           </v-list-item>
 
-          <v-list-item>
+          <v-list-item v-if="$store.state.user.userID==-1">
             <v-btn :to="register" text>
               <span class="mr-2" style="color: #000033"
                 ><strong>Register</strong></span
@@ -55,9 +55,10 @@
   </nav>
 </template>
 <script>
+import { mapState } from 'vuex';
 export default {
   name: "NavBar",
-
+  
   components: {},
 
   data: () => ({
@@ -68,11 +69,17 @@ export default {
     register: "/register",
     account: "/account",
     tchat: "/tchat",
+    
   }),
   watch: {
       group () {
         this.drawer = false
       },
     },
+    computed: {
+      ...mapState({
+        user: 'userInfos'
+      })
+    }
 };
 </script>

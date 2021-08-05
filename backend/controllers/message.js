@@ -1,15 +1,5 @@
 const sql = require("../models/db");
-const Message = require('../models/message');
 const fs = require('fs');
-const connection = require("../models/db");
-const { createPool } = require('mysql');
-const jwt = require('jsonwebtoken');
-const userSchema = require("../models/user");
-const MessageSchema = require("../models/message");
-const { default: axios } = require("axios");
-
-
-
 
 // fonction pour obtenir  tous les messages Read ALL
 exports.getAllMessage = (req, res, next) => {
@@ -33,14 +23,12 @@ exports.createMessage = (req, res, next) => {
     const userId = res.locals.userID;
 
     const message_image = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`;
-
-
     // pour sans image
     if (req.files.filename == null) {
         sql.query(`INSERT INTO message SET message_title=?,  message_content=?, user_id=?  `, [message_title, message_content, userId], function (error, results) {
             if (error) {
                 //console.log(req.file.filename);
-                return res.status(402).json({ error })
+                return res.status(500).json({ error })
             }
             console.log(message_image);
             return res.status(201).json({ message: 'Votre message  sans image a bien été posté!' })
@@ -49,26 +37,21 @@ exports.createMessage = (req, res, next) => {
         sql.query(`INSERT INTO message SET message_title=?, message_content=?, message_image=?, user_id=? `, [message_title, message_content, message_image, userId], function (error, results) {
             if (error) {
 
-                return res.status(400).json({ error })
+                return res.status(500).json({ error })
             }
 
             return res.status(201).json({ message: 'Votre message a bien été posté!' })
         })
     }
-    ////
-
-
 };
 //Delete message
 //on recupère l'objet dans la bdd, on extrait le nom du fichier à supp et on le supp avec fs.unlink,
 // dans le callback on supp l'objet dans la base puis on renvoi la rep si cela à fonctionné ou pas.
 
-// Amélioration possible trouver le moyen de ne pas bloquer si l'utilisateur n'est pas admin mais qu'il est le createur du message (optionnel)
+// Amélioration possible ne pas bloquer si l'utilisateur n'est pas admin mais qu'il est le createur du message (optionnel)
 // je dois comparer l'id de l'utilisateur avec l'id de l'utilisateur qui a crée le message si c'est bon j'autorise la suppression de l'image puis du message
 
 exports.deleteMessage = (req, res, next) => {
-
-    const userId = res.locals.userID;
     const message_id = req.params.message_id;
     
     let sqlDeletePost;
@@ -82,7 +65,7 @@ exports.deleteMessage = (req, res, next) => {
             return res.status(404).json(err.message);
         }
         // condition pour que la suppression s'execute l'id de l'utilisateur doit être admin (evolution possible du mvp la même que l'utilisateur qui a créé le message )
-        if (/*result[0].user_id == userId ||*/ admin) {
+        if ( admin) {
             
             // ici traitement de la suppression
 
@@ -100,17 +83,9 @@ exports.deleteMessage = (req, res, next) => {
                                 if (err){
                                     return res.status(500).json(err.message);
                                 }
-                                res.status(200).json({ message: "Message supprimé par l'administrateur !" })
+                                res.status(201).json({ message: "Message supprimé par l'administrateur !" })
                             })
-                        }/*else{ // si pas admin on vérifie aussi l'id de l'utilisateur
-                            sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
-                                if (err) {
-                                    return res.status(500).json(err.message);
-                                }
-    
-                                res.status(200).json({ message: "Message  supprimé !" })
-                            })
-                        }*/
+                        }
                         
                     })
 
@@ -123,17 +98,9 @@ exports.deleteMessage = (req, res, next) => {
                                 if (err){
                                     return res.status(500).json(err.message);
                                 }
-                                res.status(200).json({ message: "Message supprimé par l'administrateur !" })
+                                res.status(201).json({ message: "Message supprimé par l'administrateur !" })
                             })
-                        }/*else{// si ce n'est pas un admin 
-                            sql.query(sqlDeletePost, [userId, message_id], function (err, result) {
-                                if (err) {
-                                    return res.status(500).json(err.message);
-                                }
-                                
-                                res.status(200).json({ message: "message supprimé !" });
-                            });
-                        }*/
+                        }
                 }
                 if (err) {
                     return res.status(500).json(err.message);
@@ -191,7 +158,6 @@ exports.likeAppreciation = (req, res) => {
                 if (err) {
                     return res.status(500).json(err.message);
                 }
-                //return res.status(200).json({message: "like ajouté sur le message"+ message_id + "!"});
             })
         }
     })
@@ -214,7 +180,7 @@ exports.modifyMessage = (req, res, next) => {
             return res.status(404).json({ message: 'message introuvable' });
         }else{
             console.log(message_image);
-            return res.status(200).json({ message: 'Message modifié ! '});
+            return res.status(201).json({ message: 'Message modifié ! '});
         }
     })
     

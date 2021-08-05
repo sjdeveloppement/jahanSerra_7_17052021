@@ -3,8 +3,7 @@ const app = express();
 // body parser
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
-//const { Sequelize } = require('sequelize'); // si utilisation de l'orm sequelize 
-//const bodyParser = require('body-parser');
+
 const helmet = require('helmet'); // sécurise les entêtes http
 const path = require('path'); //accès aux  chemins des fichiers
 const messageRoute = require('./routes/message');

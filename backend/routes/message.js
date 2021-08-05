@@ -23,10 +23,5 @@ router.post('/:message_id/appreciation', auth, messageCTRL.likeAppreciation);
 // modification des messages 'udpate' 
 router.put('/:message_id', auth, multer, validatorMessage, messageCTRL.modifyMessage);
 
-/* Amélioration des routes possible en option pour le MVP
-//récuperer le message par l'id 'read' pour voir un seul message
-router.get('/:id', auth, messageCTRL.getOneMessage);
-*/
-
 
 module.exports = router;

@@ -36,7 +36,7 @@ Afin de pouvoir éxecuter l'application, vous devez installer les dépendances s
 - HELMET
 
 ## Installation
-Veuillez démarrer votre serveur MYSQL avec wamp, xamp ou autre, puis importer le fichier SQL de la bdd : groupomania.sql
+Veuillez démarrer votre serveur MYSQL avec wamp, xamp ou autre, puis importer le fichier SQL de la bdd : mygroupomania.sql
 Créez un fichier .ENV dans le fichier backend avec les informations suivantes:
 Afin de rester sur une sécurisation des données veuillez me contacter pour remplir les clefs suivantes. 
 - JWT_SECRET_TOKEN ="" 
