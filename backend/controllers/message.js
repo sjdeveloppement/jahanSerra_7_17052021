@@ -53,28 +53,21 @@ exports.createMessage = (req, res, next) => {
 
 exports.deleteMessage = (req, res, next) => {
     const message_id = req.params.message_id;
-    
     let sqlDeletePost;
     let sqlSelectPost;
     let sqlSelectmessageUserId;
-
     sqlSelectPost = `SELECT message_image FROM message WHERE message_id = ? `;
     sqlSelectmessageUserId = "SELECT user_id FROM message WHERE message_id = ?";
      sql.query(sqlSelectmessageUserId, message_id, function (err, result) {
         if (err) {
             return res.status(404).json(err.message);
         }
-        // condition pour que la suppression s'execute l'id de l'utilisateur doit être admin (evolution possible du mvp la même que l'utilisateur qui a créé le message )
+        // condition pour que la suppression s'execute l'utilisateur doit être admin
         if ( admin) {
-            
             // ici traitement de la suppression
-
-            sql.query(sqlSelectPost, message_id, function (err, result) {
-
-                
+            sql.query(sqlSelectPost, message_id, function (err, result) { 
                 if (result[0].message_image != '') {
                     const filename = result[0].message_image.split('/images/')[1];
-
                     fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
                         sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
                         sqlDeletePostAdmin = "DELETE FROM message WHERE message_id = ?"; // pour l'admin
@@ -88,7 +81,6 @@ exports.deleteMessage = (req, res, next) => {
                         }
                         
                     })
-
                 }
                 else {
                     sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
@@ -106,13 +98,10 @@ exports.deleteMessage = (req, res, next) => {
                     return res.status(500).json(err.message);
                 }
             });
-
         }else{
             return res.status(401).json({message: "Vous ne pouvez pas supprimer le message d'un autre utilisateur !"});
         }
     })
-
-
 };
 
 // like
