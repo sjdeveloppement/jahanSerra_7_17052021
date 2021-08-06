@@ -47,56 +47,52 @@ exports.createMessage = (req, res, next) => {
 //Delete message
 //on recupère l'objet dans la bdd, on extrait le nom du fichier à supp et on le supp avec fs.unlink,
 // dans le callback on supp l'objet dans la base puis on renvoi la rep si cela à fonctionné ou pas.
-
-// Amélioration possible ne pas bloquer si l'utilisateur n'est pas admin mais qu'il est le createur du message (optionnel)
-// je dois comparer l'id de l'utilisateur avec l'id de l'utilisateur qui a crée le message si c'est bon j'autorise la suppression de l'image puis du message
-
 exports.deleteMessage = (req, res, next) => {
     const message_id = req.params.message_id;
     let sqlSelectPost;
     let sqlSelectmessageUserId;
     sqlSelectPost = `SELECT message_image FROM message WHERE message_id = ? `;
     sqlSelectmessageUserId = "SELECT user_id FROM message WHERE message_id = ?";
-     sql.query(sqlSelectmessageUserId, message_id, function (err, result) {
+    sql.query(sqlSelectmessageUserId, message_id, function (err, result) {
         if (err) {
             return res.status(404).json(err.message);
         }
         // condition pour que la suppression s'execute l'utilisateur doit être admin
-        if ( admin) {
+        if (admin) {
             // ici traitement de la suppression
-            sql.query(sqlSelectPost, message_id, function (err, result) { 
+            sql.query(sqlSelectPost, message_id, function (err, result) {
                 if (result[0].message_image != '') {
                     const filename = result[0].message_image.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
                         sqlDeletePostAdmin = "DELETE FROM message WHERE message_id = ?"; // pour l'admin
-                        if(admin){
-                            sql.query(sqlDeletePostAdmin, [message_id], function (err, result){
-                                if (err){
+                        if (admin) {
+                            sql.query(sqlDeletePostAdmin, [message_id], function (err, result) {
+                                if (err) {
                                     return res.status(500).json(err.message);
                                 }
                                 res.status(201).json({ message: "Message supprimé par l'administrateur !" })
                             })
                         }
-                        
+
                     })
                 }
                 else {
                     sqlDeletePostAdmin = "DELETE FROM message WHERE message_id = ?"; // pour l'admin
-                        if(admin){
-                            sql.query(sqlDeletePostAdmin, [message_id], function (err, result){
-                                if (err){
-                                    return res.status(500).json(err.message);
-                                }
-                                res.status(201).json({ message: "Message supprimé par l'administrateur !" })
-                            })
-                        }
+                    if (admin) {
+                        sql.query(sqlDeletePostAdmin, [message_id], function (err, result) {
+                            if (err) {
+                                return res.status(500).json(err.message);
+                            }
+                            res.status(201).json({ message: "Message supprimé par l'administrateur !" })
+                        })
+                    }
                 }
                 if (err) {
                     return res.status(500).json(err.message);
                 }
             });
-        }else{
-            return res.status(401).json({message: "Vous ne pouvez pas supprimer le message d'un autre utilisateur !"});
+        } else {
+            return res.status(401).json({ message: "Vous ne pouvez pas supprimer le message d'un autre utilisateur !" });
         }
     })
 };
@@ -106,7 +102,7 @@ exports.deleteMessage = (req, res, next) => {
 exports.likeAppreciation = (req, res) => {
     // un compteur de like qui s'incrémente quand un nouvel utilisateur clique sur le bouton j'aime
     // quand l'utilisateur clique il ne peut plus re cliquer sur j'aime 
-    
+
     const userId = res.locals.userID;
 
     // on recupère l'id du message
@@ -120,7 +116,7 @@ exports.likeAppreciation = (req, res) => {
     values = [message_id, userId];
     sql.query(CheckAlreadyLiked, values, function (err, result) {
         if (err) {
-            
+
             return res.status(500).json(err.message)
         }
         // si un appreciation_id est trouvé alors on bloque, sinon on ajoute le like de l'utilisateur au message dans la table appreciation.
@@ -151,23 +147,23 @@ exports.likeAppreciation = (req, res) => {
 
 // update message
 exports.modifyMessage = (req, res, next) => {
-    let user_id= res.locals.userID;
+    let user_id = res.locals.userID;
     let message_id = req.params.message_id;
     let message_image = `${req.protocol}://${req.get('host')}/images/${req.files.filename}`
-   
+
     sql.query("UPDATE message SET message_title = ? , message_content = ? , message_image = ? WHERE message_id = ? AND user_id = ? ",
-    [req.body.message_title, req.body.message_content, message_image, message_id, user_id  ], function(error, results){
-        if (error){
-            console.log(req.body);
-            console.log(message_image);
-            return res.status(500).json({ error });
-        }
-        else if(results.length === 0){
-            return res.status(404).json({ message: 'message introuvable' });
-        }else{
-            console.log(message_image);
-            return res.status(201).json({ message: 'Message modifié ! '});
-        }
-    })
-    
+        [req.body.message_title, req.body.message_content, message_image, message_id, user_id], function (error, results) {
+            if (error) {
+                console.log(req.body);
+                console.log(message_image);
+                return res.status(500).json({ error });
+            }
+            else if (results.length === 0) {
+                return res.status(404).json({ message: 'message introuvable' });
+            } else {
+                console.log(message_image);
+                return res.status(201).json({ message: 'Message modifié ! ' });
+            }
+        })
+
 };
