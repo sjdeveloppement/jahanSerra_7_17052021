@@ -35,6 +35,7 @@
         <span v-if="status == 'loading'">Inscription en cours</span>
         <span v-else>S'inscrire</span>
       </v-btn>
+      
     </form>
   </v-container>
 </template>

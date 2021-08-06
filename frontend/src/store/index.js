@@ -87,6 +87,7 @@ export default new Vuex.Store({
           commit('setStatus', '');
           commit('logUser', response.data);
           document.location.reload();
+          
           resolve(response);
         })
         .catch(function (error){

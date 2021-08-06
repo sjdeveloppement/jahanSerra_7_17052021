@@ -1,6 +1,9 @@
 <template>
   <v-container class="sign-in">
     <h1>Se connecter</h1>
+    <v-alert v-if="status == 'created'"
+  type="success"
+>Votre compte à bien été crée !</v-alert>
     <formulaire></formulaire>
   </v-container>
 </template>
@@ -9,7 +12,7 @@
 // @ is an alias to /src
 
 import formulaire from "@/components/form.vue";
-
+import {mapState} from "vuex";
 
 
 export default {
@@ -23,6 +26,9 @@ export default {
   }),
   methods: {
     
+  },
+  computed: {
+    ...mapState(["status"]),
   },
 };
 </script>
