@@ -137,8 +137,6 @@
                   <v-icon dark> mdi-pencil </v-icon>
                 </v-btn>
 
-                <!-- système de commentaire à faire après le mvp-->
-
                 <!-- ici commentaires -->
                 <v-list id="list-comments" two-line> </v-list>
                 <template>
@@ -221,6 +219,7 @@
                 </template>
                 <v-spacer></v-spacer>
                 <v-divider></v-divider>
+                
               </v-list-item-content>
 
               <!-- compteur de like -->
@@ -253,7 +252,7 @@
             </v-list-item>
           </template>
         </v-list>
-
+        
         <!-- dialogs update message -->
         <template v-if="dialog == true && this.selectedMessageUserID == userID">
           <v-row justify="center">
@@ -330,6 +329,7 @@
             </v-dialog>
           </v-row>
         </template>
+        <v-overlay id="overlayUpmessage" v-if="dialog == true && this.selectedMessageUserID !== userID" type="error"><v-btn color="error" @click="dialog=!dialog" >Vous pouvez modifier seulement vos messages !</v-btn></v-overlay>
         <!-- dialogs comment -->
         <template v-if="dialogcom == true">
           <v-row justify="center">
@@ -426,7 +426,7 @@ export default {
       comment_content: "",
       absolute: true,
       overlay: false,
-
+      
       infos: "",
       comments: [{}],
       iClicked: "",
@@ -497,7 +497,7 @@ export default {
         return false;
       }
     },
-
+    
     //refresh post when add new one notifyParent()
     refreshPost() {
       this.$emit("refresh");
