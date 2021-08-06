@@ -53,7 +53,6 @@ exports.createMessage = (req, res, next) => {
 
 exports.deleteMessage = (req, res, next) => {
     const message_id = req.params.message_id;
-    let sqlDeletePost;
     let sqlSelectPost;
     let sqlSelectmessageUserId;
     sqlSelectPost = `SELECT message_image FROM message WHERE message_id = ? `;
@@ -69,7 +68,6 @@ exports.deleteMessage = (req, res, next) => {
                 if (result[0].message_image != '') {
                     const filename = result[0].message_image.split('/images/')[1];
                     fs.unlink(`images/${filename}`, () => {// suppression de l'image du fichier avant la suppression du message
-                        sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
                         sqlDeletePostAdmin = "DELETE FROM message WHERE message_id = ?"; // pour l'admin
                         if(admin){
                             sql.query(sqlDeletePostAdmin, [message_id], function (err, result){
@@ -83,7 +81,6 @@ exports.deleteMessage = (req, res, next) => {
                     })
                 }
                 else {
-                    sqlDeletePost = "DELETE FROM message WHERE user_id = ? AND message_id = ?";
                     sqlDeletePostAdmin = "DELETE FROM message WHERE message_id = ?"; // pour l'admin
                         if(admin){
                             sql.query(sqlDeletePostAdmin, [message_id], function (err, result){
