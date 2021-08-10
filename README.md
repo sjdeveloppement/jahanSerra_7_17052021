@@ -1,6 +1,7 @@
 jahanSerra_7_17052021
 # Ceci est le projet Groupomania
 ![Groupomania](https://github.com/sjdeveloppement/jahanSerra_7_17052021/blob/main/frontend/src/assets/icon-left-font-nobg.png)
+----------------
 Application web de réseau social d'entreprise.
 Projet fullstack réalisé par Jahân Serra dans le cadre de la formation OpenClassrooms développeur web.
 
